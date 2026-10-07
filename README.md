@@ -30,7 +30,7 @@ limiares são hipótese a calibrar.
 ## Estrutura
 
 ```
-abap/        fonte dos 28 objetos (pacote ZPOC_JEV + subpacote ZPOC_JEV_WRAP), exportados do sistema
+abap/        fonte dos 29 objetos (pacote ZPOC_JEV + subpacote ZPOC_JEV_WRAP), exportados do sistema
   tables/    ZPOC_JEV_AVAL (log) e ZPOC_JEV_CFG (limiares)
   cds/       views de indicadores (só APIs liberadas), raiz RAP e projeções
   behavior/  BDEF unmanaged e de projeção (ação registrarAvaliacao)

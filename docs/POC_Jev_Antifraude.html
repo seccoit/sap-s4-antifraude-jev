@@ -236,7 +236,7 @@
   cinco tipos de fraude, e o ABAP decide entre liberar, mandar para aprovação ou bloquear, por enquanto só registrando.</p>
 
   <div class="grid4">
-    <div class="kpi-card no-break"><div class="kpi">28</div><div class="kpi-l">objetos ABAP, 0 achados de clean core no núcleo</div></div>
+    <div class="kpi-card no-break"><div class="kpi">29</div><div class="kpi-l">objetos ABAP, 0 achados de clean core no núcleo</div></div>
     <div class="kpi-card no-break"><div class="kpi">7</div><div class="kpi-l">perguntas tipadas por avaliação</div></div>
     <div class="kpi-card no-break"><div class="kpi"><span class="hl">US$ 0,09</span></div><div class="kpi-l">a cada mil avaliações (custo medido)</div></div>
     <div class="kpi-card no-break"><div class="kpi">21/21</div><div class="kpi-l">testes automáticos do app passando</div></div>
@@ -254,7 +254,7 @@
   <h4 class="sec">Situação atual</h4>
   <table class="no-break">
     <tr><th style="width:30%">Frente</th><th style="width:20%">Status</th><th>Observação</th></tr>
-    <tr><td>Backend RAP e serviço OData V4</td><td><span class="tag t-green">Pronto</span></td><td>28 objetos ativos em 2 pacotes, serviço publicado e validado com dados reais</td></tr>
+    <tr><td>Backend RAP e serviço OData V4</td><td><span class="tag t-green">Pronto</span></td><td>29 objetos ativos em 2 pacotes, serviço publicado e validado com dados reais</td></tr>
     <tr><td>App Fiori + integração Jev</td><td><span class="tag t-green">Pronto</span></td><td>Chave só no servidor, payload anônimo, falha segura testada</td></tr>
     <tr><td>Clean core (ATC)</td><td><span class="tag t-green">Concluído</span></td><td>ATC de 37 para 0 achados no núcleo; só o wrapper isolado mantém 2 achados justificados</td></tr>
     <tr><td>Calibração dos limiares</td><td><span class="tag t-grey">Próximo passo</span></td><td>Depende da ação do aprovador para rotular os casos</td></tr>
@@ -526,7 +526,7 @@
   </ol>
 
   <h3>9. Objetos gerados no backend</h3>
-  <p>28 objetos em dois pacotes, transporte <code>S4HK913463</code>, todos ativos. O núcleo fica em <code>ZPOC_JEV</code> e usa
+  <p>29 objetos em dois pacotes, transporte <code>S4HK913463</code>, todos ativos. O núcleo fica em <code>ZPOC_JEV</code> e usa
   só APIs liberadas; o único acesso a fonte não liberada fica isolado no subpacote <code>ZPOC_JEV_WRAP</code>. Sem domínios ou
   elementos de dados próprios (tipos built-in).</p>
   <table>
@@ -556,7 +556,8 @@
     <tr><td>25</td><td><code>ZUI_POC_JEV</code></td><td>SRVD</td><td>Expõe Pedido, Avaliacao, Item e value helps</td></tr>
     <tr><td>26</td><td><code>ZUI_POC_JEV_O4</code></td><td>SRVB</td><td>OData V4 · UI, publicado</td></tr>
     <tr><td>27</td><td><code>ZCL_POC_JEV_SETUP</code></td><td>CLAS (classrun)</td><td>Carga inicial da <code>ZPOC_JEV_CFG</code> (rodar com F9)</td></tr>
-    <tr><td>28</td><td><code>ZI_POC_JEV_W_CHGDOC</code></td><td>DDLS · <code>ZPOC_JEV_WRAP</code></td><td>Wrapper liberado (C1) sobre os documentos de modificação; expõe só objeto, documento, data e tabela</td></tr>
+    <tr><td>28</td><td><code>ZI_POC_JEV_CFGPARAM</code></td><td>DDLS</td><td>Uma linha com os parâmetros da <code>ZPOC_JEV_CFG</code> já resolvidos (valor da tabela ou reserva)</td></tr>
+    <tr><td>29</td><td><code>ZI_POC_JEV_W_CHGDOC</code></td><td>DDLS · <code>ZPOC_JEV_WRAP</code></td><td>Wrapper liberado (C1) sobre os documentos de modificação; expõe só objeto, documento, data e tabela</td></tr>
   </table>
 </section>
 
@@ -569,7 +570,8 @@
   │
   ├─ ZPOC_JEV_WRAP / ZI_POC_JEV_W_CHGDOC   wrapper liberado sobre I_ChangeDocument(Item)
   │
-  ├─ ZI_POC_JEV_PEDIDOITEM         base pedido + itens no escopo
+  ├─ ZI_POC_JEV_CFGPARAM          parâmetros da ZPOC_JEV_CFG com reserva
+  ├─ ZI_POC_JEV_PEDIDOITEM         base pedido + itens + datas-limite das janelas
   │   └─ ZI_POC_JEV_ITEMIND        indicadores por item
   ├─ ZI_POC_JEV_PEDIDOVALOR        valor e janelas por pedido
   │   ├─ ZI_POC_JEV_HISTFORN       n, Σ, Σ² do fornecedor · 24h / 7d
@@ -626,10 +628,22 @@
       resposta do Jev (5 probabilidades, atipicidade, ação sugerida e suas probabilidades, versão do modelo);
       risco máximo, chave que disparou, classificação, limiares usados, modo sombra; decisão do aprovador (fase 2).</p></div>
     <div class="card no-break"><h4>ZPOC_JEV_CFG (parâmetros)</h4>
-      <p class="muted">Chave <code>client</code> + <code>param</code>. Linhas previstas: <code>LIMIAR_APROVACAO = 0,20</code>,
-      <code>LIMIAR_BLOQUEIO = 0,60</code>, <code>MODO_SOMBRA = X</code>, janelas de 30 e 7 dias. Carregada pela classe
-      <code>ZCL_POC_JEV_SETUP</code>.</p></div>
+      <p class="muted">Chave <code>client</code> + <code>param</code>. Inicializada pela classe <code>ZCL_POC_JEV_SETUP</code> (F9 no ADT,
+      uma vez). Depois, os ajustes são feitos direto na tabela e valem na próxima leitura, sem mudar código.</p></div>
   </div>
+
+  <table class="no-break">
+    <tr><th>Parâmetro</th><th class="num">Reserva</th><th>Onde atua</th><th>Quem lê</th></tr>
+    <tr><td><code>LIMIAR_APROVACAO</code></td><td class="num">0,20</td><td>Risco a partir do qual o pedido vai para aprovação</td><td>Ação <code>registrarAvaliacao</code></td></tr>
+    <tr><td><code>LIMIAR_BLOQUEIO</code></td><td class="num">0,60</td><td>Risco acima do qual o pedido seria bloqueado</td><td>Ação <code>registrarAvaliacao</code></td></tr>
+    <tr><td><code>JANELA_ALTCAD_DIAS</code></td><td class="num">30</td><td>Alterações de banco/endereço consideradas</td><td><code>ZI_POC_JEV_CFGPARAM</code></td></tr>
+    <tr><td><code>JANELA_VELOC_DIAS</code></td><td class="num">7</td><td>Pedidos ao mesmo fornecedor (a de 24h é fixa)</td><td><code>ZI_POC_JEV_CFGPARAM</code></td></tr>
+    <tr><td><code>HISTORICO_MESES</code></td><td class="num">24</td><td>Histórico do fornecedor e do material</td><td><code>ZI_POC_JEV_CFGPARAM</code></td></tr>
+    <tr><td><code>JANELA_COMPRADOR_MESES</code></td><td class="num">12</td><td>Participação do fornecedor nas compras do comprador</td><td><code>ZI_POC_JEV_CFGPARAM</code></td></tr>
+    <tr><td><code>MODO_SOMBRA</code></td><td class="num">X</td><td>Informativo: o modo sombra é fixo no código, de propósito</td><td>Ninguém</td></tr>
+  </table>
+  <p class="muted">"Reserva" é o valor usado quando a linha não existe na tabela. A view <code>ZI_POC_JEV_CFGPARAM</code> devolve sempre uma
+  linha com os parâmetros já resolvidos, e as datas-limite das janelas são calculadas num só lugar, <code>ZI_POC_JEV_PEDIDOITEM</code>.</p>
 </section>
 
 <section>
@@ -741,7 +755,7 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
   de 07/10/2026.</p>
   <div class="grid3">
     <div class="card no-break"><p class="eyebrow">Antes</p><div class="kpi">37</div><div class="kpi-l">achados de prioridade 1 em 7 dos 24 objetos</div></div>
-    <div class="card no-break"><p class="eyebrow">Depois · núcleo</p><div class="kpi"><span class="hl">0</span></div><div class="kpi-l">achados nos 27 objetos de <code>ZPOC_JEV</code></div></div>
+    <div class="card no-break"><p class="eyebrow">Depois · núcleo</p><div class="kpi"><span class="hl">0</span></div><div class="kpi-l">achados nos 28 objetos de <code>ZPOC_JEV</code></div></div>
     <div class="card no-break"><p class="eyebrow">Depois · wrapper</p><div class="kpi">2</div><div class="kpi-l">achados esperados em <code>ZI_POC_JEV_W_CHGDOC</code></div></div>
   </div>
   <table class="no-break">
@@ -775,19 +789,18 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
     <tr><td>4</td><td>Corrigir os value helps de Empresa e Org. compras</td><td>Ajuste pequeno no DDLX</td></tr>
     <tr><td>5</td><td>Excluir usuários técnicos dos flags de criador</td><td>Reduz falso positivo em fornecedor fictício e fraude interna</td></tr>
     <tr><td>6</td><td>Gravar e exibir todas as chaves acima do limiar</td><td>Hoje só a maior vai para o aprovador; no 4500001545 duas chaves passaram de 0,60</td></tr>
-    <tr><td>7</td><td>Retestar <code>registrarAvaliacao</code> depois da refatoração</td><td>A leitura foi validada; falta uma gravação pelo app para conferir o z-score no log</td></tr>
   </table>
 
   <h4>Para produção</h4>
   <table class="no-break">
     <tr><th>#</th><th>Melhoria</th><th>Por quê</th></tr>
-    <tr><td>8</td><td>Hospedagem e rota do Jev</td><td>Escolher BTP (approuter + destino) ou S/4 (SICF / proxy reverso) para guardar a chave fora do ambiente local</td></tr>
-    <tr><td>9</td><td>Versão SAPUI5 compatível</td><td>Alinhar app (1.136) e servidor (1.114)</td></tr>
-    <tr><td>10</td><td>Autorização (DCL) nas views Z</td><td>Cada usuário passa a ver só os pedidos da sua organização</td></tr>
-    <tr><td>11</td><td>Exceção de ATC para o wrapper e versão de linguagem ABAP for Cloud no núcleo</td><td>Formaliza o desvio isolado e trava novas leituras não liberadas no compilador</td></tr>
-    <tr><td>12</td><td>Integridade do resultado</td><td>Chamada do Jev pelo servidor, ou assinatura da resposta, para o ABAP não depender do que o navegador envia</td></tr>
-    <tr><td>13</td><td>Retry com espera para HTTP 429 na avaliação em lote</td><td>Hoje o limite de chamadas vira INDISPONIVEL</td></tr>
-    <tr><td>14</td><td>Performance das views de histórico</td><td>Janelas menores ou materialização para volumes reais</td></tr>
+    <tr><td>7</td><td>Hospedagem e rota do Jev</td><td>Escolher BTP (approuter + destino) ou S/4 (SICF / proxy reverso) para guardar a chave fora do ambiente local</td></tr>
+    <tr><td>8</td><td>Versão SAPUI5 compatível</td><td>Alinhar app (1.136) e servidor (1.114)</td></tr>
+    <tr><td>9</td><td>Autorização (DCL) nas views Z</td><td>Cada usuário passa a ver só os pedidos da sua organização</td></tr>
+    <tr><td>10</td><td>Exceção de ATC para o wrapper e versão de linguagem ABAP for Cloud no núcleo</td><td>Formaliza o desvio isolado e trava novas leituras não liberadas no compilador</td></tr>
+    <tr><td>11</td><td>Integridade do resultado</td><td>Chamada do Jev pelo servidor, ou assinatura da resposta, para o ABAP não depender do que o navegador envia</td></tr>
+    <tr><td>12</td><td>Retry com espera para HTTP 429 na avaliação em lote</td><td>Hoje o limite de chamadas vira INDISPONIVEL</td></tr>
+    <tr><td>13</td><td>Performance das views de histórico</td><td>Janelas menores ou materialização para volumes reais</td></tr>
   </table>
 
   <h4>Novos indicadores</h4>

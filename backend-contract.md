@@ -33,6 +33,24 @@ O único texto identificador é `SupplierName`, usado só na exibição. Nenhum 
 
 **Tipos Edm:** os tipos marcados como "esperado" seguem o mapeamento padrão do RAP V4 (abap_boolean → Edm.Boolean, int1 → Edm.Byte, int4 → Edm.Int32, dec(p,s) → Edm.Decimal Precision p / Scale s, dats → Edm.Date, timestampl → Edm.DateTimeOffset ou Edm.Decimal, sysuuid_x16 → Edm.Guid). O `$metadata` responde HTTP 200, mas **o conteúdo não foi lido**: a ferramenta disponível retorna só status e tempos. Antes de codificar, o front deve abrir `.../0001/$metadata` e conferir pelo menos: os campos booleanos de `Pedido`/`Item`/`Avaliacao`, `Atipicidade` e os parâmetros da ação `registrarAvaliacao`.
 
+## Parâmetros (tabela `ZPOC_JEV_CFG`)
+
+Os parâmetros ficam na tabela `ZPOC_JEV_CFG` (mandante corrente). Se a linha não existir, vale o valor fixo de reserva. Hoje a tabela está **vazia**, então valem os fallbacks.
+Para gravar os valores padrão, rode `ZCL_POC_JEV_SETUP` (F9 no ADT).
+
+| Parâmetro | Fallback | Onde atua | Lido por |
+|---|---|---|---|
+| `JANELA_ALTCAD_DIAS` | 30 | janela de `MasterDataChanges30d` / `DaysSinceLastMDChange` | CDS (`ZI_POC_JEV_CFGPARAM` → `ZI_POC_JEV_PEDIDOITEM`) |
+| `JANELA_VELOC_DIAS` | 7 | janela de `SuplrPOCount7d` (a janela "24h" = D-1..D é fixa) | CDS |
+| `HISTORICO_MESES` | 24 | histórico do fornecedor (`SuplrHistPOCount`, média, desvio, z-score, valor/média) e histórico do material nos itens (`HistMaterial*`, `HistSuplrMaterial*`, material novo) | CDS |
+| `JANELA_COMPRADOR_MESES` | 12 | janela de `BuyerSupplierSharePct` | CDS |
+| `LIMIAR_APROVACAO` | 0,20 | classificação da ação | behavior pool |
+| `LIMIAR_BLOQUEIO` | 0,60 | classificação da ação | behavior pool |
+| `MODO_SOMBRA` | X | **não é lido**: o modo sombra é fixo no behavior pool | — |
+
+- Os nomes dos campos (`SuplrPOCount7d`, `MasterDataChanges30d`) **não mudam** quando o parâmetro muda. Eles refletem o valor padrão; o tamanho real da janela vem da tabela.
+- Uma mudança na tabela vale na próxima leitura, sem reativar nada. As avaliações já gravadas guardam o snapshot calculado com a janela vigente no momento.
+
 ## Pedido: campos
 
 | Campo | Tipo ABAP → Edm | Significado |
