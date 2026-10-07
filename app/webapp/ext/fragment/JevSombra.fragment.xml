@@ -1,0 +1,65 @@
+<core:FragmentDefinition
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:form="sap.ui.layout.form">
+	<VBox id="jevSombraBox" width="100%">
+		<MessageStrip
+			id="jevSombraStrip"
+			type="Information"
+			showIcon="true"
+			text="{i18n>msgModoSombra}"
+			class="sapUiSmallMarginBottom" />
+		<form:Form id="jevUltimaForm" editable="false" visible="{= !!${jev>/ultima} }">
+			<form:layout>
+				<form:ColumnLayout columnsM="2" columnsL="3" columnsXL="4" />
+			</form:layout>
+			<form:formContainers>
+				<form:FormContainer id="jevUltimaContainer" title="{i18n>ultimaChamada}">
+					<form:formElements>
+						<form:FormElement id="jevFeStatus" label="{i18n>status}">
+							<form:fields>
+								<ObjectStatus
+									id="jevStatus"
+									text="{jev>/ultima/status}"
+									state="{= ${jev>/ultima/status} === 'AVALIADO' ? 'Success' : (${jev>/ultima/status} === 'INDISPONIVEL' ? 'Warning' : 'Error') }" />
+							</form:fields>
+						</form:FormElement>
+						<form:FormElement id="jevFeAcao" label="{i18n>acaoSugerida}" visible="{= !!${jev>/ultima/acaoSugerida} }">
+							<form:fields>
+								<Text id="jevAcao" text="{jev>/ultima/acaoSugerida}" />
+							</form:fields>
+						</form:FormElement>
+						<form:FormElement id="jevFeMotivo" label="{i18n>motivo}" visible="{= !!${jev>/ultima/motivo} }">
+							<form:fields>
+								<Text id="jevMotivo" text="{jev>/ultima/motivo}" />
+							</form:fields>
+						</form:FormElement>
+						<form:FormElement id="jevFeModelo" label="{i18n>modelo}" visible="{= !!${jev>/ultima/modelo} }">
+							<form:fields>
+								<Text id="jevModelo" text="{jev>/ultima/modelo}" />
+							</form:fields>
+						</form:FormElement>
+						<form:FormElement id="jevFeCusto" label="{i18n>custo}" visible="{= !!${jev>/ultima/custo} }">
+							<form:fields>
+								<Text id="jevCusto" text="{jev>/ultima/custo}" />
+							</form:fields>
+						</form:FormElement>
+						<form:FormElement id="jevFeLatencia" label="{i18n>latencia}">
+							<form:fields>
+								<Text id="jevLatencia" text="{jev>/ultima/latenciaMs} ms ({i18n>limite} {jev>/timeoutMs} ms) - {jev>/ultima/quando}" />
+							</form:fields>
+						</form:FormElement>
+					</form:formElements>
+				</form:FormContainer>
+			</form:formContainers>
+		</form:Form>
+		<Panel
+			id="jevPayloadPanel"
+			headerText="{i18n>payloadEnviado}"
+			expandable="true"
+			expanded="false"
+			visible="{= !!${jev>/ultima/payload} }">
+			<Text id="jevPayload" text="{jev>/ultima/payload}" renderWhitespace="true" class="sapUiTinyMargin" />
+		</Panel>
+	</VBox>
+</core:FragmentDefinition>

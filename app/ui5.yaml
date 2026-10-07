@@ -1,0 +1,41 @@
+specVersion: "4.0"
+metadata:
+  name: zpocjev.antifraude
+type: application
+framework:
+  name: SAPUI5
+  # Desenvolvimento local. O S/4 alvo entrega SAPUI5 1.114 (ver README, "Pendencias").
+  version: "1.136.23"
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+    - name: sap.fe.core
+    - name: sap.fe.macros
+    - name: sap.fe.templates
+    - name: sap.ui.mdc
+    - name: sap.ui.fl
+    - name: sap.insights
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    # /jev -> simulador local (padrao) ou API real (JEV_URL + JEV_API_KEY no .env, injetados no servidor)
+    - name: jev-proxy
+      afterMiddleware: compression
+      mountPath: /jev
+    # /sap -> S/4HANA. Host, client, usuario e senha SOMENTE no .env:
+    # UI5_MIDDLEWARE_SIMPLE_PROXY_BASEURI, _QUERY, _USERNAME, _PASSWORD (ver .env.example)
+    - name: ui5-middleware-simpleproxy
+      afterMiddleware: compression
+      mountPath: /sap
+      configuration:
+        strictSSL: false
+        removeETag: false
+---
+specVersion: "4.0"
+kind: extension
+type: server-middleware
+metadata:
+  name: jev-proxy
+middleware:
+  path: ui5-middleware/jevProxy.js

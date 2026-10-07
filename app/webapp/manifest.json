@@ -1,0 +1,229 @@
+{
+  "_version": "2.0.0",
+  "sap.app": {
+    "id": "zpocjev.antifraude",
+    "type": "application",
+    "i18n": {
+      "bundleName": "zpocjev.antifraude.i18n.i18n",
+      "supportedLocales": [""],
+      "fallbackLocale": ""
+    },
+    "applicationVersion": {
+      "version": "0.1.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_poc_jev_o4/srvd/sap/zui_poc_jev/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      },
+      "jevApi": {
+        "uri": "/jev/",
+        "type": "JSON"
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://shield"
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.136.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.core": {},
+        "sap.fe.macros": {},
+        "sap.fe.templates": {},
+        "sap.ui.mdc": {},
+        "sap.ui.fl": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "zpocjev.antifraude.i18n.i18n",
+          "supportedLocales": [""],
+          "fallbackLocale": ""
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "rootView": {
+      "viewName": "sap.fe.core.rootView.NavContainer",
+      "type": "XML",
+      "id": "appRootView"
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlId": "appContent",
+        "controlAggregation": "pages",
+        "transition": "slide"
+      },
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "PedidoList",
+          "target": "PedidoList"
+        },
+        {
+          "pattern": "Pedido({key}):?query:",
+          "name": "PedidoObjectPage",
+          "target": "PedidoObjectPage"
+        },
+        {
+          "pattern": "Pedido({key})/_Avaliacao({key2}):?query:",
+          "name": "AvaliacaoObjectPage",
+          "target": "AvaliacaoObjectPage"
+        }
+      ],
+      "targets": {
+        "PedidoList": {
+          "type": "Component",
+          "id": "PedidoList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Pedido",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "Pedido": {
+                  "detail": {
+                    "route": "PedidoObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "selectionMode": "Multi"
+                  },
+                  "actions": {
+                    "avaliarSelecionados": {
+                      "press": ".extension.zpocjev.antifraude.ext.controller.ListReportExt.onAvaliarSelecionados",
+                      "text": "{i18n>acaoAvaliarSelecionados}",
+                      "requiresSelection": true,
+                      "enabled": "{= !${jevLista>/busy} }"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PedidoObjectPage": {
+          "type": "Component",
+          "id": "PedidoObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/Pedido",
+              "editableHeaderContent": false,
+              "navigation": {
+                "_Avaliacao": {
+                  "detail": {
+                    "route": "AvaliacaoObjectPage"
+                  }
+                }
+              },
+              "content": {
+                "header": {
+                  "actions": {
+                    "avaliarJev": {
+                      "press": ".extension.zpocjev.antifraude.ext.controller.ObjectPageExt.onAvaliar",
+                      "text": "{i18n>acaoAvaliar}",
+                      "enabled": "{= !${jev>/busy} }"
+                    }
+                  }
+                },
+                "body": {
+                  "sections": {
+                    "jevSombra": {
+                      "template": "zpocjev.antifraude.ext.fragment.JevSombra",
+                      "title": "{i18n>secaoJev}",
+                      "position": {
+                        "placement": "Before",
+                        "anchor": "Avaliacoes"
+                      }
+                    }
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "_Item/@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                },
+                "_Avaliacao/@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "AvaliacaoObjectPage": {
+          "type": "Component",
+          "id": "AvaliacaoObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/Pedido/_Avaliacao",
+              "editableHeaderContent": false
+            }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ObjectPage.ObjectPageController#zpocjev.antifraude::PedidoObjectPage": {
+            "controllerName": "zpocjev.antifraude.ext.controller.ObjectPageExt"
+          },
+          "sap.fe.templates.ListReport.ListReportController#zpocjev.antifraude::PedidoList": {
+            "controllerName": "zpocjev.antifraude.ext.controller.ListReportExt"
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

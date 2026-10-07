@@ -1,0 +1,53 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'POC Jev - avaliacoes do pedido'
+@Metadata.allowExtensions: true
+define view entity ZC_POC_JEV_AVAL
+  as projection on ZR_POC_JEV_AVAL
+{
+  key EvaluationUUID,
+      PurchaseOrder,
+      EvaluatedAt,
+      EvaluatedBy,
+      SnapSupplierAgeDays,
+      SnapMDChanges30d,
+      SnapSharedBankOtherCount,
+      SnapAmountToSuplrAvgRatio,
+      SnapAmountZScore,
+      SnapPriceToInfoRecordRatio,
+      SnapPriceToMaterialAvgRatio,
+      SnapQtyToHistRatio,
+      SnapMaterialNewForSupplier,
+      SnapPaymentTermsDiverge,
+      SnapInvoiceBeforePO,
+      SnapCreatorPostedGR,
+      SnapSupplierCreatorIsPOCreator,
+      SnapSuplrPOCount24h,
+      SnapSuplrPOCount7d,
+      SnapBuyerSupplierSharePct,
+      JevDisponivel,
+      ProbFornecedorFicticio,
+      ProbDesvioPagamento,
+      ProbSobrepreco,
+      ProbFracionamento,
+      ProbFraudeInterna,
+      Atipicidade,
+      JevAcaoSugerida,
+      JevProbLiberar,
+      JevProbAprovacao,
+      JevProbBloquear,
+      JevModeloVersao,
+      RiscoMax,
+      ChaveRiscoMax,
+      Classificacao,
+      ClassificacaoCriticality,
+      LimiarAprovacaoUsado,
+      LimiarBloqueioUsado,
+      ModoSombra,
+      DecisaoAprovador,
+      Aprovador,
+      DecisaoTimestamp,
+      DecisaoObservacao,
+      LocalLastChangedAt,
+
+      _Pedido : redirected to parent ZC_POC_JEV_PEDIDO
+}

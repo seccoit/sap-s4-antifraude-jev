@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>POC Antifraude Jev — Documentação</title>
+<style>
+  :root {
+    --sap:  #0a6ed1;
+    --sap-dark: #0854a0;
+    --ink:  #1d2d3e;
+    --muted:#5b6b7b;
+    --line: #d9e1e8;
+    --bg-soft: #f4f7fa;
+    --green:#107e3e;
+    --amber:#e9730c;
+    --red:  #bb0000;
+    --grey: #6a6d70;
+  }
+  * { box-sizing: border-box; }
+  html { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+  body { margin: 0; background: #fff; }
+
+  h1,h2,h3,h4 { color: var(--sap-dark); line-height: 1.25; }
+  h2 { font-size: 17pt; border-bottom: 2px solid var(--sap); padding-bottom: 4px; margin-top: 0; }
+  h3 { font-size: 13pt; margin-top: 22px; }
+  h4 { font-size: 11pt; margin-bottom: 4px; color: var(--ink); }
+  p { margin: 8px 0; }
+  code, pre { font-family: "Cascadia Code", "Consolas", monospace; font-size: 9pt; }
+  code { background: var(--bg-soft); padding: 1px 4px; border-radius: 3px; color: #7b1fa2; }
+  pre { background: #0f2233; color: #e6edf3; padding: 12px 14px; border-radius: 6px;
+        overflow-x: auto; line-height: 1.4; white-space: pre; }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9.5pt; }
+  th, td { border: 1px solid var(--line); padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: var(--sap); color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: var(--bg-soft); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .muted { color: var(--muted); }
+  .tag { display:inline-block; padding:1px 7px; border-radius:10px; font-size:8pt; font-weight:600; color:#fff; white-space: nowrap; }
+  .t-green{background:var(--green);} .t-amber{background:var(--amber);}
+  .t-red{background:var(--red);} .t-grey{background:var(--grey);} .t-sap{background:var(--sap);}
+
+  .callout { border-left: 4px solid var(--sap); background: var(--bg-soft);
+             padding: 10px 14px; margin: 14px 0; border-radius: 0 6px 6px 0; }
+  .callout.warn { border-left-color: var(--amber); }
+  .callout.key  { border-left-color: var(--green); }
+
+  .cover { height: 100vh; display: flex; flex-direction: column; justify-content: center;
+           padding: 0 20mm; page-break-after: always; }
+  .cover .kicker { color: var(--sap); font-weight: 700; letter-spacing: 3px; font-size: 11pt; text-transform: uppercase; }
+  .cover h1 { font-size: 32pt; margin: 8px 0 4px; color: var(--ink); }
+  .cover .sub { font-size: 14pt; color: var(--muted); margin-bottom: 40px; }
+  .cover .meta { font-size: 10pt; color: var(--muted); }
+  .cover .meta b { color: var(--ink); }
+  .cover .rule { width: 80px; height: 5px; background: var(--sap); margin: 18px 0 26px; border-radius: 3px; }
+
+  .toc { page-break-after: always; padding: 0 4mm; }
+  .toc ol { line-height: 2; }
+
+  section { page-break-before: always; }
+  .no-break { page-break-inside: avoid; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; }
+  .card h4 { margin-top: 0; color: var(--sap-dark); }
+  .kpi { font-size: 20pt; font-weight: 700; color: var(--sap-dark); line-height: 1.1; }
+  .kpi-l { font-size: 9pt; color: var(--muted); }
+
+  .footer-note { font-size: 8pt; color: var(--muted); text-align: center; margin-top: 30px; }
+
+  @page { size: A4; margin: 16mm 14mm; }
+  @media print { .cover { height: 250mm; } }
+  @media screen {
+    body { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+    section { margin-top: 48px; }
+  }
+  @media screen and (max-width: 640px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    table { display: block; overflow-x: auto; }
+    .cover { padding: 0; height: auto; min-height: 90vh; }
+    .cover h1 { font-size: 24pt; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= CAPA ================= -->
+<div class="cover">
+  <div class="kicker">SAP S/4HANA · Fiori Elements · TypeSafe Jev</div>
+  <h1>POC Antifraude em Pedidos de Compra</h1>
+  <div class="sub">Indicadores no ABAP · decisão tipada do Jev · classificação no ABAP · modo sombra</div>
+  <div class="rule"></div>
+  <div class="sub" style="font-size:12pt;">Documentação funcional, técnica e de custo</div>
+  <div class="meta">
+    <p><b>Pacote:</b> ZPOC_JEV &nbsp;·&nbsp; <b>Transporte:</b> S4HK913463</p>
+    <p><b>Serviço:</b> ZUI_POC_JEV_O4 (OData V4 · UI)</p>
+    <p><b>App:</b> zpocjev.antifraude (Fiori Elements V4, List Report + Object Page)</p>
+    <p><b>Modelo:</b> typesafe/jev-1.13 via OpenRouter</p>
+    <p><b>Sistema:</b> S/4HANA on-premise, ABAP 758, HANA</p>
+    <p><b>Versão do documento:</b> 1.0 &nbsp;·&nbsp; <b>Data:</b> 06/10/2026</p>
+  </div>
+</div>
+
+<!-- ================= SUMÁRIO ================= -->
+<div class="toc">
+  <h2>Sumário</h2>
+  <ol>
+    <li><b>Parte I — Funcional</b>
+      <ol>
+        <li>Objetivo e escopo</li>
+        <li>Fraudes cobertas</li>
+        <li>O que a POC avalia (indicadores)</li>
+        <li>Perguntas ao Jev</li>
+        <li>Como a decisão é tomada</li>
+        <li>A tela</li>
+        <li>Caso real: pedido 4500001366</li>
+      </ol>
+    </li>
+    <li><b>Parte II — Técnica</b>
+      <ol start="8">
+        <li>Arquitetura e fluxo</li>
+        <li>Objetos gerados no backend</li>
+        <li>Camadas CDS e cálculo dos indicadores</li>
+        <li>RAP: ação <code>registrarAvaliacao</code></li>
+        <li>Tabelas Z</li>
+        <li>Frontend e integração com o Jev</li>
+        <li>Segurança e LGPD</li>
+      </ol>
+    </li>
+    <li><b>Parte III — Custo, resultados e próximos passos</b>
+      <ol start="15">
+        <li>Custo</li>
+        <li>Resultados e testes</li>
+        <li>Limitações e riscos</li>
+        <li>Melhorias e roadmap</li>
+        <li>Como executar</li>
+      </ol>
+    </li>
+  </ol>
+</div>
+
+<!-- ============================================================= -->
+<!-- PARTE I — FUNCIONAL                                            -->
+<!-- ============================================================= -->
+<section>
+  <h2>Parte I — Funcional</h2>
+
+  <h3>1. Objetivo e escopo</h3>
+  <p>A POC mostra os pedidos de compra do S/4HANA num app Fiori com indicadores de risco já calculados.
+  A partir do app, o usuário pede ao <b>Jev</b> (modelo de decisão da TypeSafe AI) uma estimativa de risco
+  de fraude. O resultado volta ao ABAP, que aplica limiares e classifica o pedido em <b>liberar</b>,
+  <b>enviar para aprovação</b> ou <b>bloquear</b>.</p>
+
+  <div class="callout key">
+    <b>Modo sombra.</b> Nesta fase a POC avalia e registra, mas <b>não bloqueia nenhum pedido</b>.
+    Cada avaliação é gravada num log para depois ser comparada com o que de fato deu problema. Só então
+    os limiares são calibrados e o bloqueio pode ser ligado.
+  </div>
+
+  <p>O Jev não gera texto nem explicação. Ele recebe o estado (os indicadores) e perguntas tipadas, e
+  devolve um valor de um conjunto definido, com probabilidade. Por isso cada risco tem a sua pergunta:
+  as perguntas separadas dizem ao aprovador <b>onde olhar</b>.</p>
+
+  <h4>Escopo</h4>
+  <ul>
+    <li>Pedidos de compra normais: <code>BSTYP = F</code>, tipo <code>NB</code>, sem intercompany, sem itens eliminados ou de devolução.</li>
+    <li>Histórico de comparação: 24 meses anteriores ao pedido, na mesma moeda.</li>
+    <li>Comprador = usuário criador do pedido (<code>EKKO-ERNAM</code>).</li>
+    <li>Sem job em lote: só é avaliado o pedido que alguém abre e avalia no app. A ação de lista permite avaliar vários de uma vez.</li>
+  </ul>
+
+  <h3>2. Fraudes cobertas</h3>
+  <table class="no-break">
+    <tr><th>Fraude</th><th>Como aparece nos dados</th><th>Pergunta ao Jev</th></tr>
+    <tr><td><b>Fornecedor fictício ou de fachada</b></td><td>Cadastro novo, pouco ou nenhum histórico, conta bancária compartilhada, cadastrado pelo mesmo usuário que compra</td><td><code>fornecedor_ficticio</code></td></tr>
+    <tr><td><b>Desvio de pagamento</b></td><td>Fornecedor antigo troca dados bancários ou endereço e logo recebe pedido; condição de pagamento fora do padrão</td><td><code>desvio_pagamento</code></td></tr>
+    <tr><td><b>Sobrepreço</b></td><td>Preço unitário acima do registro info ou do histórico do material</td><td><code>sobrepreco</code></td></tr>
+    <tr><td><b>Fracionamento</b></td><td>Vários pedidos ao mesmo fornecedor em poucos dias</td><td><code>fracionamento</code></td></tr>
+    <tr><td><b>Fraude interna</b></td><td>Quebra de segregação: o comprador também lança o recebimento ou cadastrou o fornecedor; fatura anterior ao pedido; concentração</td><td><code>fraude_interna</code></td></tr>
+  </table>
+
+  <div class="callout warn">
+    <b>Regra dura, fora do Jev.</b> Fornecedor bloqueado no mestre (<code>LFA1-SPERR/SPERM/SPERZ</code> ou
+    <code>LFM1-SPERM</code>) é decidido no ABAP como <span class="tag t-red">BLOQUEIO_REGRA</span> e o Jev não é chamado.
+    A regra dura sempre vence o modelo. CNPJ inapto ou baixado, CNAE e listas restritivas dependem de fonte
+    externa e ficaram fora desta POC.
+  </div>
+
+  <h3>3. O que a POC avalia (indicadores)</h3>
+  <p>O ABAP calcula todos os indicadores e entrega ao front já prontos. Nada de nome, CNPJ, endereço ou
+  dados bancários em texto: só dias, razões, contagens, flags e categorias.</p>
+
+  <table>
+    <tr><th>Grupo</th><th>Indicador</th><th>Origem no SAP</th><th>Status</th></tr>
+    <tr><td rowspan="5">Fornecedor</td><td>Idade do cadastro na data do pedido (dias)</td><td>LFA1 (<code>I_Supplier</code>)</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Criador do fornecedor = criador do pedido</td><td>LFA1-ERNAM, BUT000-CRUSR, EKKO-ERNAM</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Alterações de banco/endereço em 30 dias e dias desde a última</td><td>CDHDR/CDPOS (KRED, BUPA_BUP, BUPA_BANK, BUPA_ADR)</td><td><span class="tag t-amber">Simplificado</span></td></tr>
+    <tr><td>Conta bancária usada por outro fornecedor (flag e quantidade)</td><td>LFBK / BUT0BK</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Nº de pedidos, valor médio e desvio padrão</td><td>EKKO/EKPO via AMDP</td><td><span class="tag t-amber">Simplificado</span></td></tr>
+    <tr><td rowspan="6">Pedido</td><td>Valor total, razão vs média do fornecedor e z-score</td><td>Pedido + histórico</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Preço unitário vs registro info e vs histórico do material (pior item)</td><td>EKPO, EINA/EINE</td><td><span class="tag t-amber">Simplificado</span></td></tr>
+    <tr><td>Quantidade vs histórico (pior item)</td><td>EKPO</td><td><span class="tag t-amber">Simplificado</span></td></tr>
+    <tr><td>Material nunca comprado desse fornecedor</td><td>EKPO</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Condição de pagamento diferente do padrão do fornecedor</td><td>EKKO-ZTERM vs LFM1/LFB1</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Pedido criado depois da fatura</td><td>RSEG/RBKP</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td rowspan="2">Velocidade</td><td>Pedidos ao mesmo fornecedor em 24h</td><td>EKKO</td><td><span class="tag t-amber">Por data</span></td></tr>
+    <tr><td>Pedidos ao mesmo fornecedor em 7 dias</td><td>EKKO</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td rowspan="2">Comprador</td><td>Participação do fornecedor nas compras do comprador (%)</td><td>EKKO/EKPO via AMDP</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td>Criador do pedido também lançou a entrada de mercadoria</td><td>EKBE (VGABE = 1)</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td rowspan="2">Fora da POC</td><td>Distância do valor até a alçada de aprovação</td><td>Estratégia de liberação</td><td><span class="tag t-grey">Roadmap</span></td></tr>
+    <tr><td>Idade e situação do CNPJ, CNAE, listas restritivas</td><td>Fonte externa</td><td><span class="tag t-grey">Fora</span></td></tr>
+  </table>
+  <p class="muted">"Simplificado": razões só comparam itens na mesma moeda e unidade de preço; alterações de
+  endereço via ADRC (objeto ADRESSE) ficaram de fora; 24h é aproximado por data porque a EKKO não guarda a hora de criação.</p>
+
+  <h4>Histórico insuficiente</h4>
+  <p>Com menos de <b>3 pedidos anteriores</b> do fornecedor, a razão do valor, o z-score e a participação do
+  comprador recebem o rótulo <code>insufficient_history</code> no lugar da faixa comparativa. O número cru
+  continua no state, mas o Jev é instruído a não tratá-lo como desvio. Sem essa regra, um fornecedor com um
+  único pedido anterior de 500 transformava um pedido de 49.500 em "99× a média".</p>
+</section>
+
+<section>
+  <h3>4. Perguntas ao Jev</h3>
+  <p>São sete perguntas na mesma chamada. Todas veem o mesmo state e são respondidas em paralelo, sem ver as
+  respostas umas das outras. As chaves ficam em português (contrato com o ABAP); os textos ficam em inglês,
+  porque a documentação da TypeSafe indica precisão menor em outros idiomas.</p>
+
+  <table>
+    <tr><th>Chave</th><th>Tipo</th><th>Pergunta</th><th>Retorno</th></tr>
+    <tr><td><code>fornecedor_ficticio</code></td><td>Noul</td><td><i>Is the supplier likely a fictitious (shell) vendor created to divert money?</i></td><td>Probabilidade 0–1</td></tr>
+    <tr><td><code>desvio_pagamento</code></td><td>Noul</td><td><i>Is there a risk that the payment for this order is being diverted to a different beneficiary?</i></td><td>Probabilidade 0–1</td></tr>
+    <tr><td><code>sobrepreco</code></td><td>Noul</td><td><i>Is the order overpriced compared with the reference prices?</i></td><td>Probabilidade 0–1</td></tr>
+    <tr><td><code>fracionamento</code></td><td>Noul</td><td><i>Is this order likely part of a purchase split into several smaller orders to avoid approval limits?</i></td><td>Probabilidade 0–1</td></tr>
+    <tr><td><code>fraude_interna</code></td><td>Noul</td><td><i>Is there a sign of internal fraud or collusion by the buyer who created the order?</i></td><td>Probabilidade 0–1</td></tr>
+    <tr><td><code>atipicidade</code></td><td>Score</td><td><i>How atypical is this purchase order compared with the supplier and material history?</i> — 5 níveis, de <i>Typical</i> a <i>Extremely atypical</i></td><td>Nota 1–5 + confiança</td></tr>
+    <tr><td><code>acao</code></td><td>Choice</td><td><i>Which handling would a procurement fraud analyst recommend for this purchase order?</i></td><td>liberar / aprovacao / bloquear, com probabilidade de cada</td></tr>
+  </table>
+  <p>Cada pergunta Noul tem critérios <code>true</code> e <code>false</code> com descrição (<code>what</code>),
+  exclusões (<code>not_for</code>) e exemplos, e aponta com crase os campos do state que deve olhar
+  (por exemplo <code>`supplier.registration_age`</code>).</p>
+
+  <div class="callout">
+    <b>A ação sugerida é só sinal.</b> A resposta de <code>acao</code> é gravada para comparação, mas
+    <b>a classificação é sempre do ABAP</b>, a partir das cinco probabilidades e dos limiares. É o que a
+    própria documentação do Jev recomenda: o modelo devolve evidência; a política fica no código.
+  </div>
+
+  <h3>5. Como a decisão é tomada</h3>
+  <p>A ação <code>registrarAvaliacao</code> aplica as regras nesta ordem:</p>
+  <ol>
+    <li>Fornecedor bloqueado → <span class="tag t-red">BLOQUEIO_REGRA</span> (risco 1, qualquer que seja o payload).</li>
+    <li>Jev sem resposta, erro ou resposta fora do formato → <span class="tag t-grey">INDISPONIVEL</span>. Nada é bloqueado.</li>
+    <li>Senão: <b>risco máximo</b> = maior das 5 probabilidades; a chave que disparou é gravada para o aprovador.</li>
+  </ol>
+  <table class="no-break">
+    <tr><th>Risco máximo</th><th>Classificação</th><th>Efeito previsto (fora do modo sombra)</th></tr>
+    <tr><td>Abaixo de 20%</td><td><span class="tag t-green">LIBERA</span></td><td>Segue sozinho</td></tr>
+    <tr><td>De 20% a 60%</td><td><span class="tag t-amber">APROVACAO</span></td><td>Vai para aprovação, mostrando as chaves que pesaram</td></tr>
+    <tr><td>Acima de 60%</td><td><span class="tag t-red">BLOQUEIA</span></td><td>Bloqueia e alerta</td></tr>
+  </table>
+  <p class="muted">Os limiares ficam na tabela <code>ZPOC_JEV_CFG</code>, com 0,20 e 0,60 como reserva no código. São
+  hipótese a calibrar: um estudo de phishing reportou erro de calibração esperado de 0,154 nas probabilidades
+  diretas do Jev.</p>
+
+  <h3>6. A tela</h3>
+  <div class="grid2">
+    <div class="card no-break"><h4>List Report</h4>
+      <p class="muted">Lista de pedidos com valor, regra dura, última classificação, último risco e semáforos de idade
+      do fornecedor, alterações cadastrais, conta compartilhada e preço. Filtros por fornecedor (com nome),
+      criador, data, empresa, org. de compras, regra e classificação. Ação de lista "Avaliar com Jev" para os selecionados.</p></div>
+    <div class="card no-break"><h4>Object Page</h4>
+      <p class="muted">Seções Fornecedor, Pedido × histórico e Comprador com todos os indicadores; tabela de itens com
+      as razões por item; tabela de avaliações (log); seção "Jev (modo sombra)" com o aviso, a última chamada,
+      o payload enviado, o modelo e o custo. Botão "Avaliar com Jev (modo sombra)".</p></div>
+  </div>
+</section>
+
+<section>
+  <h3>7. Caso real: pedido 4500001366</h3>
+  <p>Primeira avaliação com o Jev real (<code>typesafe/jev-1.13-20260917</code>), em 06/10/2026.</p>
+
+  <div class="grid2">
+    <div class="card no-break">
+      <h4>O que os indicadores mostram</h4>
+      <ul>
+        <li>Pedido de 1.000 BRL, empresa 1710, criado em 09/04/2026.</li>
+        <li>Fornecedor <b>cadastrado no mesmo dia</b> do pedido (idade 0).</li>
+        <li><b>Cadastrado pelo mesmo usuário</b> que criou o pedido.</li>
+        <li>Primeiro pedido ao fornecedor; material nunca comprado dele.</li>
+        <li>Sem sinais de conta compartilhada, alteração bancária, condição de pagamento, velocidade ou fatura anterior.</li>
+        <li>Participação de 100% marcada como <code>insufficient_history</code>.</li>
+      </ul>
+    </div>
+    <div class="card no-break">
+      <h4>O que o Jev respondeu</h4>
+      <table>
+        <tr><th>Pergunta</th><th class="num">Resultado</th></tr>
+        <tr><td>Fornecedor fictício</td><td class="num"><b>0,87</b></td></tr>
+        <tr><td>Fraude interna</td><td class="num"><b>0,47</b></td></tr>
+        <tr><td>Desvio de pagamento</td><td class="num">0,05</td></tr>
+        <tr><td>Sobrepreço</td><td class="num">0,05</td></tr>
+        <tr><td>Fracionamento</td><td class="num">0,05</td></tr>
+        <tr><td>Atipicidade</td><td class="num">3 de 5</td></tr>
+        <tr><td>Ação sugerida</td><td class="num">aprovação 0,54 · bloquear 0,44 · liberar 0,02</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <p><b>Decisão do ABAP:</b> risco máximo 0,87 na chave <code>FORNECEDOR_FICTICIO</code>, acima de 0,60 →
+  <span class="tag t-red">BLOQUEIA</span>, gravado em modo sombra. O modelo sugeriu "aprovação"; a divergência é
+  esperada, porque a decisão segue os limiares e não a sugestão. Custo da chamada: <b>US$ 0,0000913</b>.</p>
+
+  <div class="callout warn">
+    <b>Leitura correta do caso.</b> Este é um sistema de teste, onde cadastrar o fornecedor e lançar o pedido no
+    mesmo dia, pelo mesmo usuário, é como se monta dado de teste. Na vida real provavelmente seria falso positivo.
+    O que importa para a POC: o modelo reagiu certo ao padrão "fornecedor de fachada" e apontou a chave certa
+    para o aprovador olhar. É exatamente para medir casos assim que existe o modo sombra.
+  </div>
+
+  <h4>Comparação: pedido 4500001545</h4>
+  <p>Pedido de 10 BRL, empresa 1410, de 29/07/2026. O fornecedor também foi cadastrado no mesmo dia, pelo mesmo
+  usuário que criou o pedido, sem histórico. A diferença: <b>existe uma fatura com data anterior à criação do pedido</b>.
+  O material, por outro lado, já tinha sido comprado desse fornecedor.</p>
+  <table class="no-break">
+    <tr><th>Resultado</th><th class="num">4500001366</th><th class="num">4500001545</th></tr>
+    <tr><td>Fornecedor fictício</td><td class="num">0,87</td><td class="num">0,87</td></tr>
+    <tr><td><b>Fraude interna</b></td><td class="num">0,47</td><td class="num"><b>0,85</b></td></tr>
+    <tr><td>Desvio de pagamento / sobrepreço / fracionamento</td><td class="num">0,05 / 0,05 / 0,05</td><td class="num">0,05 / 0,06 / 0,06</td></tr>
+    <tr><td>Atipicidade</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr><td><b>Ação sugerida</b></td><td class="num">aprovação 0,54 · bloquear 0,44</td><td class="num"><b>bloquear 0,51</b> · aprovação 0,48</td></tr>
+    <tr><td>Classificação ABAP</td><td class="num">BLOQUEIA (fornecedor fictício)</td><td class="num">BLOQUEIA (fornecedor fictício)</td></tr>
+  </table>
+  <p>O sinal novo (pedido criado depois da fatura) quase dobrou a probabilidade de fraude interna e virou a
+  sugestão do modelo para "bloquear". A classificação não mudou, porque o risco máximo continua sendo
+  fornecedor fictício, com 0,87. Para o aprovador, porém, o segundo pedido acende duas chaves acima de 0,60, e não uma.
+  Isso mostra o valor das perguntas separadas, e sugere exibir também a <b>segunda chave</b> na tela.</p>
+</section>
+
+<!-- ============================================================= -->
+<!-- PARTE II — TÉCNICA                                             -->
+<!-- ============================================================= -->
+<section>
+  <h2>Parte II — Técnica</h2>
+
+  <h3>8. Arquitetura e fluxo</h3>
+  <p>A chamada ao Jev sai do front, não do ABAP, passando por uma rota do próprio app que injeta a chave no
+  servidor. O ABAP só expõe os indicadores e recebe as probabilidades de volta.</p>
+
+  <svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fluxo da POC" style="margin:6px 0;">
+    <style>
+      .lbl{font-family:'Segoe UI',Arial;font-size:12px;fill:#1d2d3e;}
+      .lblw{font-family:'Segoe UI',Arial;font-size:12px;fill:#fff;font-weight:600;}
+      .sub{font-family:'Consolas',monospace;font-size:10px;fill:#5b6b7b;}
+      .subw{font-family:'Consolas',monospace;font-size:10px;fill:#e6edf3;}
+      .arw{stroke:#0a6ed1;stroke-width:1.6;marker-end:url(#a);fill:none;}
+      .num{font-family:'Segoe UI',Arial;font-size:11px;fill:#0854a0;font-weight:700;}
+    </style>
+    <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#0a6ed1"/></marker></defs>
+
+    <rect x="20" y="20" width="300" height="130" rx="6" fill="#0854a0"/>
+    <text class="lblw" x="34" y="44">S/4HANA (ABAP)</text>
+    <text class="subw" x="34" y="66">CDS de indicadores + AMDP</text>
+    <text class="subw" x="34" y="84">Regra dura (fornecedor bloqueado)</text>
+    <text class="subw" x="34" y="102">RAP: registrarAvaliacao → limiares</text>
+    <text class="subw" x="34" y="120">ZPOC_JEV_AVAL (log) · ZPOC_JEV_CFG</text>
+    <text class="subw" x="34" y="138">OData V4: ZUI_POC_JEV_O4</text>
+
+    <rect x="400" y="20" width="300" height="130" rx="6" fill="#e9730c"/>
+    <text class="lblw" x="414" y="44">App Fiori (navegador)</text>
+    <text class="subw" x="414" y="66">List Report + Object Page</text>
+    <text class="subw" x="414" y="84">JevClient: buildRequest / parseResponse</text>
+    <text class="subw" x="414" y="102">timeout 1500 ms · máx. 3 simultâneas</text>
+    <text class="subw" x="414" y="120">sem nome, código ou usuário no payload</text>
+
+    <rect x="400" y="210" width="300" height="60" rx="6" fill="#0a6ed1"/>
+    <text class="lblw" x="414" y="234">Rota /jev (servidor do app)</text>
+    <text class="subw" x="414" y="254">injeta Authorization: Bearer (chave no .env)</text>
+
+    <rect x="400" y="300" width="300" height="48" rx="6" fill="#107e3e"/>
+    <text class="lblw" x="414" y="320">OpenRouter → TypeSafe Jev</text>
+    <text class="subw" x="414" y="338">POST /api/alpha/decisions · jev-1.13</text>
+
+    <path class="arw" d="M320,60 L400,60"/>
+    <text class="num" x="330" y="52">1 indicadores</text>
+    <path class="arw" d="M550,150 L550,210"/>
+    <text class="num" x="558" y="186">2 state + 7 perguntas</text>
+    <path class="arw" d="M550,270 L550,300"/>
+    <path class="arw" d="M400,120 L320,120"/>
+    <text class="num" x="326" y="138">3 probabilidades</text>
+  </svg>
+
+  <ol>
+    <li>O ABAP expõe por OData os pedidos com os indicadores calculados e a regra dura aplicada.</li>
+    <li>O front monta o state e as sete perguntas e chama a rota <code>/jev</code>. Pedidos com regra dura não vão ao Jev.</li>
+    <li>A rota injeta a chave no servidor e encaminha ao OpenRouter. Sem resposta em 1,5 s, o front desiste.</li>
+    <li>O front envia as probabilidades à ação <code>registrarAvaliacao</code>; o ABAP aplica os limiares e grava o log.</li>
+  </ol>
+
+  <h3>9. Objetos gerados no backend</h3>
+  <p>24 objetos no pacote <code>ZPOC_JEV</code>, transporte <code>S4HK913463</code>, todos ativos. Sem domínios ou
+  elementos de dados próprios (tipos built-in).</p>
+  <table>
+    <tr><th>#</th><th>Objeto</th><th>Tipo</th><th>Papel</th></tr>
+    <tr><td>1</td><td><code>ZPOC_JEV_AVAL</code></td><td>TABL</td><td>Log das avaliações: snapshot dos indicadores, resposta do Jev, classificação, limiares usados, modo sombra, campos de decisão (fase 2)</td></tr>
+    <tr><td>2</td><td><code>ZPOC_JEV_CFG</code></td><td>TABL</td><td>Limiares e parâmetros</td></tr>
+    <tr><td>3</td><td><code>ZI_POC_JEV_PEDIDOITEM</code></td><td>DDLS</td><td>Base EKKO + EKPO no escopo, preço unitário normalizado</td></tr>
+    <tr><td>4</td><td><code>ZI_POC_JEV_ITEMIND</code></td><td>DDLS</td><td>Indicadores por item: preço vs registro info e histórico, quantidade, material novo</td></tr>
+    <tr><td>5</td><td><code>ZTF_POC_JEV_HIST</code></td><td>DDLS (table function)</td><td>Estatísticas históricas, velocidade e participação do comprador</td></tr>
+    <tr><td>6</td><td><code>ZCL_POC_JEV_HIST_AMDP</code></td><td>CLAS (AMDP)</td><td>Implementação HANA da table function (desvio padrão, janelas)</td></tr>
+    <tr><td>7</td><td><code>ZI_POC_JEV_FORNIND</code></td><td>DDLS</td><td>Idade e criador do fornecedor, conta compartilhada, regra dura, condição de pagamento</td></tr>
+    <tr><td>8</td><td><code>ZI_POC_JEV_ALTCAD</code></td><td>DDLS</td><td>Alterações de banco/endereço em 30 dias</td></tr>
+    <tr><td>9</td><td><code>ZI_POC_JEV_FLUXODOC</code></td><td>DDLS</td><td>Fatura anterior ao pedido, criador lançou EM, pior item por pedido</td></tr>
+    <tr><td>10</td><td><code>ZR_POC_JEV_PEDIDO</code></td><td>DDLS (root)</td><td>Raiz: 1 linha por pedido, semáforos, regra dura, última avaliação, nome do fornecedor</td></tr>
+    <tr><td>11</td><td><code>ZR_POC_JEV_AVAL</code></td><td>DDLS</td><td>Filha: avaliações do pedido (composição)</td></tr>
+    <tr><td>12</td><td><code>ZA_POC_JEV_AVAL_IN</code></td><td>DDLS (abstract)</td><td>Parâmetro da ação</td></tr>
+    <tr><td>13</td><td><code>ZR_POC_JEV_PEDIDO</code></td><td>BDEF</td><td>Unmanaged, strict(2), ação <code>registrarAvaliacao</code></td></tr>
+    <tr><td>14</td><td><code>ZBP_R_POC_JEV_PEDIDO</code></td><td>CLAS</td><td>Behavior pool: read, lock, ação, limiares, save</td></tr>
+    <tr><td>15</td><td><code>ZC_POC_JEV_PEDIDO</code></td><td>DDLS (projection)</td><td>Consumo: List Report / Object Page</td></tr>
+    <tr><td>16</td><td><code>ZC_POC_JEV_AVAL</code></td><td>DDLS (projection)</td><td>Tabela de avaliações</td></tr>
+    <tr><td>17</td><td><code>ZC_POC_JEV_ITEM</code></td><td>DDLS</td><td>Tabela de itens com indicadores</td></tr>
+    <tr><td>18</td><td><code>ZC_POC_JEV_PEDIDO</code></td><td>BDEF (projection)</td><td>Expõe a ação</td></tr>
+    <tr><td>19–21</td><td><code>ZC_POC_JEV_PEDIDO</code>, <code>_AVAL</code>, <code>_ITEM</code></td><td>DDLX</td><td>Anotações de UI: facets, colunas, semáforos, value helps, texto do fornecedor</td></tr>
+    <tr><td>22</td><td><code>ZUI_POC_JEV</code></td><td>SRVD</td><td>Expõe Pedido, Avaliacao, Item e value helps</td></tr>
+    <tr><td>23</td><td><code>ZUI_POC_JEV_O4</code></td><td>SRVB</td><td>OData V4 · UI, publicado</td></tr>
+    <tr><td>24</td><td><code>ZCL_POC_JEV_SETUP</code></td><td>CLAS (classrun)</td><td>Carga inicial da <code>ZPOC_JEV_CFG</code> (rodar com F9)</td></tr>
+  </table>
+</section>
+
+<section>
+  <h3>10. Camadas CDS e cálculo dos indicadores</h3>
+<pre><code>CDS standard (reuso): I_PurchaseOrderAPI01 · I_PurchaseOrderItemAPI01 · I_Supplier
+                      I_SupplierPurchasingOrg · I_SupplierBankDetails · I_ChangeDocument(Item)
+                      I_PurgInfoRecdOrgPlntDataApi01 · I_SupplierInvoiceAPI01 · EKBE
+  │
+  ├─ ZI_POC_JEV_PEDIDOITEM         base EKKO+EKPO no escopo
+  │   └─ ZI_POC_JEV_ITEMIND        indicadores por item
+  ├─ ZTF_POC_JEV_HIST (AMDP)       média, desvio, z-score, 24h/7d, participação do comprador
+  ├─ ZI_POC_JEV_FORNIND            fornecedor + regra dura
+  ├─ ZI_POC_JEV_ALTCAD             alterações cadastrais 30d
+  ├─ ZI_POC_JEV_FLUXODOC           fatura antes do pedido, criador lançou EM, pior item
+  │
+  ├─ ZR_POC_JEV_PEDIDO (root) ──composition── ZR_POC_JEV_AVAL
+  ├─ ZC_POC_JEV_PEDIDO / ZC_POC_JEV_AVAL / ZC_POC_JEV_ITEM  (+ DDLX)
+  └─ ZUI_POC_JEV (SRVD) → ZUI_POC_JEV_O4 (SRVB, OData V4 UI)</code></pre>
+
+  <h4>Decisões de modelagem</h4>
+  <ul>
+    <li><b>Sem vazamento do futuro:</b> o histórico considera só pedidos criados <b>antes</b> do pedido avaliado.</li>
+    <li><b>Table function com AMDP:</b> CDS não tem desvio padrão nem raiz quadrada; a AMDP usa as funções do HANA.</li>
+    <li><b>Pior item:</b> o cálculo saiu da AMDP para <code>ZI_POC_JEV_FLUXODOC</code>, porque a AMDP não conseguiu ler a view de itens (restrição de mandante).</li>
+    <li><b>Semáforos</b> como inteiros na raiz (1 vermelho, 2 amarelo, 3 verde, 0 neutro): idade do fornecedor (&lt;90 d vermelho, &lt;365 d amarelo), alterações cadastrais, conta compartilhada, preço (&gt;1,20 vermelho, &gt;1,05 amarelo), regra e classificação.</li>
+  </ul>
+
+  <h3>11. RAP: ação <code>registrarAvaliacao</code></h3>
+  <p>A raiz é <b>unmanaged</b> (strict 2): é leitura sobre a EKKO, que não tem nem deve ter tabela própria; a única
+  escrita é a ação, que insere uma linha na <code>ZPOC_JEV_AVAL</code>. A filha é só leitura e o lock é vazio, porque o
+  log só recebe inserções com chave UUID.</p>
+<pre><code>POST /sap/opu/odata4/sap/zui_poc_jev_o4/srvd/sap/zui_poc_jev/0001/
+     Pedido('4500001403')/com.sap.gateway.srvd.zui_poc_jev.v0001.registrarAvaliacao
+{
+  "JevDisponivel": true,
+  "ProbFornecedorFicticio": 0.05, "ProbDesvioPagamento": 0.10, "ProbSobrepreco": 0.42,
+  "ProbFracionamento": 0.08, "ProbFraudeInterna": 0.03,
+  "Atipicidade": 3,
+  "JevAcaoSugerida": "APROVACAO",
+  "JevProbLiberar": 0.30, "JevProbAprovacao": 0.55, "JevProbBloquear": 0.15,
+  "JevModeloVersao": "typesafe/jev-1.13-20260917"
+}</code></pre>
+  <table class="no-break">
+    <tr><th>Parâmetro</th><th>Tipo</th><th>Regra</th></tr>
+    <tr><td><code>JevDisponivel</code></td><td>Boolean</td><td><code>false</code> → INDISPONIVEL</td></tr>
+    <tr><td>5 × <code>Prob*</code></td><td>Decimal(5,4)</td><td>0 a 1, validado</td></tr>
+    <tr><td><code>Atipicidade</code></td><td>Byte</td><td>1 a 5, validado</td></tr>
+    <tr><td><code>JevAcaoSugerida</code></td><td>String(12)</td><td>LIBERAR / APROVACAO / BLOQUEAR</td></tr>
+    <tr><td>3 × <code>JevProb*</code></td><td>Decimal(5,4)</td><td>0 a 1</td></tr>
+    <tr><td><code>JevModeloVersao</code></td><td>String(30)</td><td>versão do modelo, ou <code>INDISPONIVEL:&lt;motivo&gt;</code></td></tr>
+  </table>
+  <p>Retorno: o próprio pedido, com <code>LastClassification</code> e <code>LastRiskMax</code> atualizados. Erros de faixa voltam como HTTP 400.</p>
+
+  <h3>12. Tabelas Z</h3>
+  <div class="grid2">
+    <div class="card no-break"><h4>ZPOC_JEV_AVAL (log)</h4>
+      <p class="muted">Chave <code>client</code> + <code>aval_uuid</code>. Pedido, data/hora e usuário; snapshot de 16 indicadores;
+      resposta do Jev (5 probabilidades, atipicidade, ação sugerida e suas probabilidades, versão do modelo);
+      risco máximo, chave que disparou, classificação, limiares usados, modo sombra; decisão do aprovador (fase 2).</p></div>
+    <div class="card no-break"><h4>ZPOC_JEV_CFG (parâmetros)</h4>
+      <p class="muted">Chave <code>client</code> + <code>param</code>. Linhas previstas: <code>LIMIAR_APROVACAO = 0,20</code>,
+      <code>LIMIAR_BLOQUEIO = 0,60</code>, <code>MODO_SOMBRA = X</code>, janelas de 30 e 7 dias. Carregada pela classe
+      <code>ZCL_POC_JEV_SETUP</code>.</p></div>
+  </div>
+</section>
+
+<section>
+  <h3>13. Frontend e integração com o Jev</h3>
+  <p>App Fiori Elements V4 em <code>C:\SAP IA\zpoc_jev\app</code>. As anotações vivem na CDS; o app tem só a
+  configuração e uma extensão de controller para o botão do Jev.</p>
+  <table>
+    <tr><th>Arquivo</th><th>Papel</th></tr>
+    <tr><td><code>webapp/jev/JevClient.js</code></td><td>Monta o state e as 7 perguntas, valida a resposta e converte para os parâmetros da ação. Timeout 1500 ms, máximo 3 chamadas simultâneas</td></tr>
+    <tr><td><code>webapp/jev/AvaliacaoService.js</code></td><td>Orquestra: lê o pedido, aplica a regra dura, chama o Jev, executa a ação</td></tr>
+    <tr><td><code>webapp/ext/controller/*.controller.js</code></td><td>Botão na Object Page e ação na List Report</td></tr>
+    <tr><td><code>webapp/ext/fragment/JevSombra.fragment.xml</code></td><td>Seção "Jev (modo sombra)": aviso, última chamada, payload, modelo e custo</td></tr>
+    <tr><td><code>ui5-middleware/jevProxy.js</code></td><td>Rota <code>/jev</code>: injeta a chave e encaminha ao OpenRouter; sem chave, usa o simulador</td></tr>
+    <tr><td><code>mock-jev/</code></td><td>Simulador determinístico no mesmo formato do Jev real, com timeout e erros forçáveis</td></tr>
+    <tr><td><code>test/unit/</code></td><td>21 testes automáticos</td></tr>
+  </table>
+
+  <h4>Chamada ao Jev</h4>
+<pre><code>POST https://openrouter.ai/api/alpha/decisions
+Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
+{ "model": "typesafe/jev-1.13",
+  "state": { "supplier": {...}, "order": {...}, "velocity": {...}, "buyer": {...}, "baseline": {...} },
+  "questions": { "fornecedor_ficticio": { "type": "noul", ... }, ..., "acao": { "type": "choice", ... } } }</code></pre>
+
+  <h4>Tradução da resposta para o SAP</h4>
+  <table class="no-break">
+    <tr><th>Resposta do Jev</th><th>Parâmetro da ação</th></tr>
+    <tr><td><code>answers.&lt;risco&gt;.noul</code></td><td><code>Prob*</code> (4 casas)</td></tr>
+    <tr><td><code>answers.atipicidade.score</code> (índice 0–4)</td><td><code>Atipicidade = round(score) + 1</code></td></tr>
+    <tr><td><code>answers.acao.choice</code> e <code>.probabilities</code></td><td><code>JevAcaoSugerida</code> (maiúsculas) e <code>JevProb*</code></td></tr>
+    <tr><td><code>model</code></td><td><code>JevModeloVersao</code></td></tr>
+  </table>
+
+  <h4>Falha segura</h4>
+  <p>Timeout, erro de rede, HTTP 4xx/5xx (401 chave inválida, 402 sem crédito, 429 limite, 5xx provedor) ou resposta
+  fora do formato viram <span class="tag t-grey">INDISPONIVEL</span>, com o motivo em <code>JevModeloVersao</code>
+  (por exemplo <code>INDISPONIVEL:HTTP_402</code>). Nunca um valor padrão é inventado e nada é bloqueado.</p>
+
+  <h3>14. Segurança e LGPD</h3>
+  <ul>
+    <li><b>Chave do Jev</b> só no servidor (<code>.env</code>); nunca no código, no bundle, no navegador ou no log.</li>
+    <li><b>Payload anônimo:</b> nenhum nome, código de fornecedor, usuário ou número de pedido sai do SAP. Um teste automático garante isso. O nome do fornecedor aparece só na tela.</li>
+    <li><b>Credenciais do S/4</b> ficam no <code>.env</code> local, fora do controle de versão.</li>
+    <li><b>Autorização:</b> as views Z estão sem checagem (<code>#NOT_REQUIRED</code>). Aceito para POC; não para produção.</li>
+    <li><b>Integridade:</b> o ABAP confia nas probabilidades que o front envia. Valida faixas, mas não há assinatura do resultado do Jev.</li>
+  </ul>
+</section>
+
+<!-- ============================================================= -->
+<!-- PARTE III — CUSTO, RESULTADOS, PRÓXIMOS PASSOS                 -->
+<!-- ============================================================= -->
+<section>
+  <h2>Parte III — Custo, resultados e próximos passos</h2>
+
+  <h3>15. Custo</h3>
+  <p>O Jev cobra só os tokens de entrada; a saída é gratuita. Cada resposta traz o custo real em
+  <code>usage.cost</code>, exibido na tela. Custo medido na primeira chamada real (pedido 4500001366, 7 perguntas):</p>
+
+  <div class="grid3">
+    <div class="card no-break"><div class="kpi">US$ 0,0000913</div><div class="kpi-l">por avaliação (medido)</div></div>
+    <div class="card no-break"><div class="kpi">≈ US$ 0,09</div><div class="kpi-l">a cada 1.000 avaliações</div></div>
+    <div class="card no-break"><div class="kpi">≈ US$ 91</div><div class="kpi-l">por 1 milhão de avaliações</div></div>
+  </div>
+
+  <h4>Projeção</h4>
+  <table class="no-break">
+    <tr><th>Cenário</th><th class="num">Avaliações</th><th class="num">Custo estimado (US$)</th></tr>
+    <tr><td>Volume atual do sistema de teste (288 pedidos no escopo, 1 avaliação cada)</td><td class="num">288</td><td class="num">0,03</td></tr>
+    <tr><td>Empresa média: 5.000 pedidos/mês</td><td class="num">5.000</td><td class="num">0,46 / mês</td></tr>
+    <tr><td>Empresa grande: 50.000 pedidos/mês</td><td class="num">50.000</td><td class="num">4,57 / mês</td></tr>
+    <tr><td>Backtest de 12 meses a 50.000/mês</td><td class="num">600.000</td><td class="num">54,78 (uma vez)</td></tr>
+  </table>
+  <p class="muted">Estimativa linear sobre o custo medido. O custo varia com o tamanho do state e das perguntas
+  (limite de 32.000 tokens por chamada). Confirmar o preço vigente na página do modelo no OpenRouter.</p>
+
+  <h4>Outros custos</h4>
+  <ul>
+    <li><b>Latência:</b> a TypeSafe cita cerca de 100 ms por consulta; o simulador local respondeu em 168 ms. O front desiste em 1,5 s.</li>
+    <li><b>SAP:</b> sem licença ou infraestrutura adicional. Os objetos usam CDS, RAP e AMDP do próprio S/4.</li>
+    <li><b>Performance do backend:</b> a primeira leitura da lista levou cerca de 4,5 s com ~1.400 pedidos. Em produção, as views de histórico precisam de janelas menores ou materialização.</li>
+  </ul>
+
+  <h3>16. Resultados e testes</h3>
+  <table>
+    <tr><th>Teste</th><th>Resultado</th></tr>
+    <tr><td>Indicadores com dado real</td><td>4500001403: preço 10% abaixo do registro info, material novo, 2 pedidos em 7 dias. 4500001649: conta compartilhada com 3 fornecedores, criador lançou EM, 32,6% de participação</td></tr>
+    <tr><td>Serviço publicado</td><td><code>$metadata</code>, lista e avaliações respondem HTTP 200</td></tr>
+    <tr><td>Avaliação com simulador (4500001403)</td><td><span class="tag t-amber">APROVACAO</span>, risco 0,28 por fracionamento</td></tr>
+    <tr><td>Timeout forçado</td><td>Desistiu em 1,5 s e gravou <span class="tag t-grey">INDISPONIVEL</span>; nada bloqueado</td></tr>
+    <tr><td>Avaliação com o Jev real (4500001366)</td><td><span class="tag t-red">BLOQUEIA</span> em modo sombra, fornecedor fictício 0,87</td></tr>
+    <tr><td>Testes automáticos</td><td>21 de 21: payload sem identificadores, formatos inválidos rejeitados, erros HTTP e timeout viram INDISPONIVEL, limite de concorrência, regra dura, histórico insuficiente, chave nunca em log</td></tr>
+    <tr><td>Qualidade do app</td><td>Linter UI5 sem achados; manifest válido contra o schema oficial</td></tr>
+  </table>
+
+  <h3>17. Limitações e riscos</h3>
+  <ul>
+    <li><b>Limiares não calibrados:</b> 0,20 e 0,60 são hipótese. A classe de setup ainda não foi executada; vale a reserva no código.</li>
+    <li><b>Dados de teste:</b> o sistema tem poucos pedidos e padrões típicos de teste, o que gera falsos positivos (caso 4500001366).</li>
+    <li><b>Usuários técnicos</b> (BASIS, DDIC, etc.) distorcem os flags de criador.</li>
+    <li><b>Alterações cadastrais:</b> nenhuma na janela de 30 dias nos dados atuais; o indicador sai 0 em todos os pedidos.</li>
+    <li><b>Velocidade 24h</b> aproximada por data.</li>
+    <li><b>Endpoint "alpha"</b> do OpenRouter: o contrato pode mudar. Uma mudança de formato vira INDISPONIVEL, nunca dado errado.</li>
+    <li><b>Versão SAPUI5:</b> o app foi feito em 1.136 e o S/4 entrega 1.114. Antes do deploy, é preciso decidir entre atualizar o servidor ou rebaixar o app.</li>
+    <li><b>Value helps:</b> os filtros Empresa e Org. compras geram um erro no console, sem efeito na tela.</li>
+  </ul>
+</section>
+
+<section>
+  <h3>18. Melhorias e roadmap</h3>
+
+  <h4>Para fechar a POC</h4>
+  <table class="no-break">
+    <tr><th>#</th><th>Melhoria</th><th>Por quê</th></tr>
+    <tr><td>1</td><td>Rodar <code>ZCL_POC_JEV_SETUP</code> (F9 no ADT)</td><td>Grava os limiares na tabela, para ajustá-los sem mexer em código</td></tr>
+    <tr><td>2</td><td>Ação do aprovador (<code>registrarDecisao</code>)</td><td>A decisão humana (era fraude ou não) é o rótulo necessário para calibrar os limiares. Os campos já existem na tabela</td></tr>
+    <tr><td>3</td><td>Backtest com histórico rotulado</td><td>Avaliar um período em lotes, cruzar com casos reais de fraude e falso positivo, e varrer limiares por custo de erro</td></tr>
+    <tr><td>4</td><td>Corrigir os value helps de Empresa e Org. compras</td><td>Ajuste pequeno no DDLX</td></tr>
+    <tr><td>5</td><td>Excluir usuários técnicos dos flags de criador</td><td>Reduz falso positivo em fornecedor fictício e fraude interna</td></tr>
+    <tr><td>6</td><td>Gravar e exibir todas as chaves acima do limiar</td><td>Hoje só a maior vai para o aprovador; no 4500001545 duas chaves passaram de 0,60</td></tr>
+  </table>
+
+  <h4>Para produção</h4>
+  <table class="no-break">
+    <tr><th>#</th><th>Melhoria</th><th>Por quê</th></tr>
+    <tr><td>7</td><td>Hospedagem e rota do Jev</td><td>Escolher BTP (approuter + destino) ou S/4 (SICF / proxy reverso) para guardar a chave fora do ambiente local</td></tr>
+    <tr><td>8</td><td>Versão SAPUI5 compatível</td><td>Alinhar app (1.136) e servidor (1.114)</td></tr>
+    <tr><td>9</td><td>Autorização (DCL) nas views Z</td><td>Cada usuário vê só os pedidos da sua organização</td></tr>
+    <tr><td>10</td><td>Integridade do resultado</td><td>Chamada do Jev pelo servidor, ou assinatura da resposta, para o ABAP não depender do que o navegador envia</td></tr>
+    <tr><td>11</td><td>Retry com espera para HTTP 429 na avaliação em lote</td><td>Hoje o limite de chamadas vira INDISPONIVEL</td></tr>
+    <tr><td>12</td><td>Performance das views de histórico</td><td>Janelas menores ou materialização para volumes reais</td></tr>
+  </table>
+
+  <h4>Novos indicadores</h4>
+  <table class="no-break">
+    <tr><th>#</th><th>Indicador</th><th>O que exige</th></tr>
+    <tr><td>13</td><td>Distância do valor até a alçada de aprovação</td><td>CDS nova sobre a estratégia de liberação; reforça <code>fracionamento</code></td></tr>
+    <tr><td>14</td><td>24h exato</td><td>Hora de criação pelo CDHDR (objeto EINKBELEG)</td></tr>
+    <tr><td>15</td><td>Alterações de endereço completas</td><td>Ligar ADRC (objeto ADRESSE) ao fornecedor</td></tr>
+    <tr><td>16</td><td>CNPJ, CNAE e listas restritivas</td><td>Integração com fonte externa; CNPJ inapto e lista restritiva viram regra dura</td></tr>
+    <tr><td>17</td><td>Conversão de moeda</td><td>Comparar preços em moedas diferentes com <code>currency_conversion</code></td></tr>
+  </table>
+
+  <h3>19. Como executar</h3>
+<pre><code>cd "C:\SAP IA\zpoc_jev\app"
+npm install
+copy .env.example .env     # usuário e senha do S/4 + OPENROUTER_API_KEY
+npm start                  # http://localhost:8080/index.html</code></pre>
+  <ul>
+    <li>No PowerShell 5.1, use <code>;</code> em vez de <code>&amp;&amp;</code> para encadear comandos.</li>
+    <li><code>http://localhost:8080/jev/health</code> responde <code>"modo":"real"</code> quando a chave foi lida; sem chave, o app usa o simulador.</li>
+    <li>Para demonstrar a falha segura com o simulador, acrescente <code>?jev-sim=timeout</code> ou <code>?jev-sim=erro</code> ao endereço.</li>
+    <li>Se a avaliação gravar <code>INDISPONIVEL:HTTP_404</code>, defina <code>JEV_URL=https://openrouter.ai/api/v1/api/alpha/decisions</code> no <code>.env</code>.</li>
+  </ul>
+
+  <h4>Documentos de apoio</h4>
+  <table class="no-break">
+    <tr><th>Arquivo</th><th>Conteúdo</th></tr>
+    <tr><td><code>zpoc_jev/system-info.md</code></td><td>Capacidades do sistema</td></tr>
+    <tr><td><code>zpoc_jev/gap-analysis.md</code></td><td>Análise de lacunas e desenho aprovado</td></tr>
+    <tr><td><code>zpoc_jev/backend-contract.md</code></td><td>Contrato do serviço OData</td></tr>
+    <tr><td><code>zpoc_jev/jev-api.md</code></td><td>Referência da API do Jev via OpenRouter</td></tr>
+    <tr><td><code>zpoc_jev/app/README.md</code></td><td>Execução do app e roadmap</td></tr>
+  </table>
+
+  <div class="footer-note">
+    POC Antifraude Jev · Documentação v1.0 · 06/10/2026 · Pacote ZPOC_JEV · Transporte S4HK913463
+  </div>
+</section>
+
+</body>
+</html>

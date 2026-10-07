@@ -1,0 +1,19 @@
+{
+  "name": "zpocjev.antifraude",
+  "version": "0.1.0",
+  "private": true,
+  "description": "POC antifraude em pedidos de compra - Fiori Elements V4 (List Report + Object Page) com avaliacao Jev em modo sombra",
+  "scripts": {
+    "start": "ui5 serve --port 8080 --open index.html",
+    "start-noopen": "ui5 serve --port 8080",
+    "mock-jev": "node mock-jev/server.js",
+    "test": "node --test test/unit/JevClient.test.js test/unit/AvaliacaoService.test.js test/unit/jevProxy.test.js",
+    "lint": "ui5lint"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^4",
+    "@ui5/linter": "^1",
+    "dotenv": "^16",
+    "ui5-middleware-simpleproxy": "^3"
+  }
+}
