@@ -2,85 +2,170 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>POC Antifraude Jev — Documentação</title>
 <style>
   :root {
     --sap:  #0a6ed1;
     --sap-dark: #0854a0;
+    --navy: #0b2545;
+    --navy-2: #12355f;
     --ink:  #1d2d3e;
     --muted:#5b6b7b;
-    --line: #d9e1e8;
-    --bg-soft: #f4f7fa;
+    --line: #dbe3ec;
+    --bg-soft: #f4f7fb;
+    --bg-blue: #eaf3fd;
     --green:#107e3e;
     --amber:#e9730c;
     --red:  #bb0000;
     --grey: #6a6d70;
+    --violet:#7b1fa2;
   }
-  * { box-sizing: border-box; }
-  html { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html { font-family: "Segoe UI", "Segoe UI Variable", Arial, sans-serif; color: var(--ink); font-size: 10.2pt; line-height: 1.55; }
   body { margin: 0; background: #fff; }
 
-  h1,h2,h3,h4 { color: var(--sap-dark); line-height: 1.25; }
-  h2 { font-size: 17pt; border-bottom: 2px solid var(--sap); padding-bottom: 4px; margin-top: 0; }
-  h3 { font-size: 13pt; margin-top: 22px; }
-  h4 { font-size: 11pt; margin-bottom: 4px; color: var(--ink); }
+  /* ---------- tipografia ---------- */
+  h1,h2,h3,h4 { color: var(--navy); line-height: 1.25; }
+  h3 { font-size: 13pt; margin: 26px 0 10px; padding-left: 12px; border-left: 4px solid var(--sap);
+       break-after: avoid; page-break-after: avoid; }
+  h4 { font-size: 10.8pt; margin: 18px 0 6px; color: var(--sap-dark); break-after: avoid; page-break-after: avoid; }
   p { margin: 8px 0; }
-  code, pre { font-family: "Cascadia Code", "Consolas", monospace; font-size: 9pt; }
-  code { background: var(--bg-soft); padding: 1px 4px; border-radius: 3px; color: #7b1fa2; }
-  pre { background: #0f2233; color: #e6edf3; padding: 12px 14px; border-radius: 6px;
-        overflow-x: auto; line-height: 1.4; white-space: pre; }
+  ul, ol { padding-left: 20px; }
+  li { margin: 3px 0; }
+  code, pre { font-family: "Cascadia Code", "Consolas", monospace; font-size: 8.8pt; }
+  code { background: var(--bg-blue); padding: 1px 5px; border-radius: 4px; color: var(--sap-dark); }
+  pre { background: var(--navy); color: #e6edf3; padding: 14px 16px; border-radius: 8px;
+        overflow-x: auto; line-height: 1.45; white-space: pre; border-left: 4px solid var(--sap); }
   pre code { background: none; color: inherit; padding: 0; }
+  b, strong { color: var(--navy); }
 
-  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9.5pt; }
-  th, td { border: 1px solid var(--line); padding: 6px 9px; text-align: left; vertical-align: top; }
-  th { background: var(--sap); color: #fff; font-weight: 600; }
+  /* ---------- abertura das partes ---------- */
+  section { break-before: page; page-break-before: always; }
+  section > h2:first-child {
+    margin: 0 0 22px; padding: 22px 26px 20px; border: 0; border-radius: 12px;
+    background: linear-gradient(120deg, var(--navy) 0%, var(--navy-2) 55%, var(--sap-dark) 100%);
+    color: #fff; font-size: 20pt; letter-spacing: .2px; position: relative; overflow: hidden;
+  }
+  section > h2:first-child::after {
+    content: ""; position: absolute; right: -40px; top: -60px; width: 220px; height: 220px; border-radius: 50%;
+    border: 28px solid rgba(255,255,255,.07);
+  }
+  h2 { font-size: 16pt; border-bottom: 2px solid var(--sap); padding-bottom: 4px; }
+
+  /* ---------- tabelas ---------- */
+  table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 12px 0; font-size: 9.2pt;
+          border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  th, td { padding: 7px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+  th { background: var(--navy-2); color: #fff; font-weight: 600; font-size: 8.8pt; letter-spacing: .2px; }
+  tr:last-child td { border-bottom: 0; }
   tr:nth-child(even) td { background: var(--bg-soft); }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
 
   .muted { color: var(--muted); }
-  .tag { display:inline-block; padding:1px 7px; border-radius:10px; font-size:8pt; font-weight:600; color:#fff; white-space: nowrap; }
+  .tag { display:inline-block; padding:1px 8px; border-radius:10px; font-size:7.8pt; font-weight:700; color:#fff; white-space: nowrap; letter-spacing:.2px; }
   .t-green{background:var(--green);} .t-amber{background:var(--amber);}
   .t-red{background:var(--red);} .t-grey{background:var(--grey);} .t-sap{background:var(--sap);}
 
-  .callout { border-left: 4px solid var(--sap); background: var(--bg-soft);
-             padding: 10px 14px; margin: 14px 0; border-radius: 0 6px 6px 0; }
-  .callout.warn { border-left-color: var(--amber); }
-  .callout.key  { border-left-color: var(--green); }
+  /* ---------- avisos ---------- */
+  .callout { position: relative; border: 1px solid #cfe2f8; background: var(--bg-blue);
+             padding: 12px 16px 12px 46px; margin: 16px 0; border-radius: 10px; break-inside: avoid; page-break-inside: avoid; }
+  .callout::before { content: "i"; position: absolute; left: 14px; top: 12px; width: 20px; height: 20px; border-radius: 50%;
+             background: var(--sap); color: #fff; font: 700 11pt/20px Georgia, serif; text-align: center; }
+  .callout.warn { background: #fff4e8; border-color: #f6d3ae; }
+  .callout.warn::before { content: "!"; background: var(--amber); font-family: "Segoe UI", Arial, sans-serif; }
+  .callout.key { background: #ebf6ef; border-color: #b9dfc6; }
+  .callout.key::before { content: "✓"; background: var(--green); font-family: "Segoe UI Symbol", "Segoe UI", sans-serif; font-size: 10pt; }
 
-  .cover { height: 100vh; display: flex; flex-direction: column; justify-content: center;
-           padding: 0 20mm; page-break-after: always; }
-  .cover .kicker { color: var(--sap); font-weight: 700; letter-spacing: 3px; font-size: 11pt; text-transform: uppercase; }
-  .cover h1 { font-size: 32pt; margin: 8px 0 4px; color: var(--ink); }
-  .cover .sub { font-size: 14pt; color: var(--muted); margin-bottom: 40px; }
-  .cover .meta { font-size: 10pt; color: var(--muted); }
-  .cover .meta b { color: var(--ink); }
-  .cover .rule { width: 80px; height: 5px; background: var(--sap); margin: 18px 0 26px; border-radius: 3px; }
-
-  .toc { page-break-after: always; padding: 0 4mm; }
-  .toc ol { line-height: 2; }
-
-  section { page-break-before: always; }
-  .no-break { page-break-inside: avoid; }
-
+  /* ---------- cartões ---------- */
+  .no-break { break-inside: avoid; page-break-inside: avoid; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .card { border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: #fff;
+          box-shadow: 0 1px 0 rgba(11,37,69,.04); }
   .card h4 { margin-top: 0; color: var(--sap-dark); }
-  .kpi { font-size: 20pt; font-weight: 700; color: var(--sap-dark); line-height: 1.1; }
-  .kpi-l { font-size: 9pt; color: var(--muted); }
+  .card table { margin: 6px 0 0; }
+  .kpi { font-size: 19pt; font-weight: 700; color: var(--sap-dark); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .kpi-l { font-size: 8.6pt; color: var(--muted); margin-top: 4px; }
+  img { max-width: 100%; }
 
-  .footer-note { font-size: 8pt; color: var(--muted); text-align: center; margin-top: 30px; }
+  .footer-note { font-size: 8pt; color: var(--muted); text-align: center; margin-top: 30px;
+                 padding-top: 10px; border-top: 1px solid var(--line); }
 
-  @page { size: A4; margin: 16mm 14mm; }
-  @media print { .cover { height: 250mm; } }
+  /* ---------- capa ---------- */
+  .cover { position: relative; overflow: hidden; color: #fff; break-after: page; page-break-after: always;
+           background: radial-gradient(1200px 700px at 110% -10%, #1a5fb4 0%, rgba(26,95,180,0) 60%),
+                       linear-gradient(160deg, #071a33 0%, var(--navy) 45%, var(--navy-2) 100%);
+           display: flex; flex-direction: column; padding: 26mm 22mm 20mm; }
+  .cover .rings { position: absolute; right: -60mm; top: -40mm; width: 190mm; height: 190mm; pointer-events: none; }
+  .cover .kicker { font-weight: 700; letter-spacing: 3px; font-size: 9.5pt; text-transform: uppercase; color: #8cc3ff; }
+  .cover h1 { font-size: 34pt; line-height: 1.08; margin: 14px 0 12px; color: #fff; max-width: 150mm; }
+  .cover .lead { font-size: 13pt; color: #c9dcf3; max-width: 140mm; margin: 0; }
+  .cover .chips { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover .chip { border: 1px solid rgba(255,255,255,.35); border-radius: 20px; padding: 3px 12px; font-size: 9pt; color: #e6f0fb; }
+  .cover .chip.on { background: #107e3e; border-color: #107e3e; color: #fff; font-weight: 600; }
+  .cover .spacer { flex: 1; }
+  .cover .doc { font-size: 11pt; color: #fff; font-weight: 600; margin-bottom: 12px; letter-spacing: .3px; }
+  .cover .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cover .meta div { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 9px 12px; }
+  .cover .meta span { display: block; font-size: 7.6pt; text-transform: uppercase; letter-spacing: 1.4px; color: #8cc3ff; }
+  .cover .meta b { color: #fff; font-weight: 600; font-size: 9.6pt; }
+  .cover .foot { margin-top: 16px; font-size: 8.5pt; color: #9fb7d3; display: flex; justify-content: space-between; }
+
+  .cover .flow { margin-top: 34mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  .cover .flow div { padding: 0 12px 0 0; position: relative; }
+  .cover .flow div::before { content: ""; position: absolute; left: 30px; right: 4px; top: 14px; border-top: 1px dashed rgba(140,195,255,.45); }
+  .cover .flow div:last-child::before { display: none; }
+  .cover .flow i { font-style: normal; display: inline-block; width: 28px; height: 28px; border-radius: 50%; background: #0a6ed1;
+                   color: #fff; font-weight: 700; text-align: center; line-height: 28px; font-size: 10pt; position: relative; }
+  .cover .flow b { display: block; color: #fff; font-size: 10pt; margin: 10px 0 3px; }
+  .cover .flow span { display: block; color: #a9c4e4; font-size: 8.4pt; line-height: 1.4; }
+  .reading { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+  .reading .card p { margin: 4px 0 0; }  /* ---------- resumo e sumário ---------- */
+  .summary, .toc { break-after: page; page-break-after: always; }
+  .eyebrow { font-size: 8.5pt; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sap); margin: 0 0 4px; }
+  .page-title { font-size: 22pt; margin: 0 0 6px; color: var(--navy); }
+  .page-lead { color: var(--muted); font-size: 11pt; margin: 0 0 18px; max-width: 160mm; }
+  .kpi-card { border-radius: 12px; padding: 14px 14px 12px; background: var(--bg-blue); border: 1px solid #cfe2f8; }
+  .story { border-top: 4px solid var(--sap); }
+  .story.s2 { border-top-color: var(--navy-2); }
+  .story.s3 { border-top-color: var(--green); }
+  .story h4 { margin: 2px 0 6px; }
+  .status { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: start; margin-top: 6px; }
+  .toc-part { border: 1px solid var(--line); border-radius: 12px; padding: 0; overflow: hidden; margin-bottom: 14px; break-inside: avoid; }
+  .toc-part .hd { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; padding: 10px 16px;
+                  display: flex; justify-content: space-between; align-items: baseline; }
+  .toc-part .hd b { color: #fff; font-size: 12pt; }
+  .toc-part .hd span { color: #8cc3ff; font-size: 8.5pt; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; }
+  .toc-part ol { list-style: none; margin: 0; padding: 8px 16px 10px; columns: 2; column-gap: 24px; }
+  .toc-part li { margin: 0; padding: 5px 0; border-bottom: 1px dotted var(--line); break-inside: avoid; }
+  .toc-part li i { font-style: normal; display: inline-block; width: 22px; color: var(--sap); font-weight: 700; }
+
+  /* ---------- página ---------- */
+  @page { size: A4; margin: 20mm 15mm 18mm;
+    @top-left   { content: "POC Antifraude · SAP S/4HANA + TypeSafe Jev"; font: 600 7.6pt "Segoe UI", Arial; color: #0854a0; vertical-align: bottom; padding-bottom: 4mm; }
+    @top-right  { content: "Documentação v1.1"; font: 7.6pt "Segoe UI", Arial; color: #8696a7; vertical-align: bottom; padding-bottom: 4mm; }
+    @bottom-left  { content: "Pacote ZPOC_JEV · uso interno"; font: 7.4pt "Segoe UI", Arial; color: #8696a7; }
+    @bottom-right { content: counter(page) " / " counter(pages); font: 600 7.6pt "Segoe UI", Arial; color: #0854a0; }
+  }
+  @page :first { margin: 0;
+    @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; }
+  }
+  @media print {
+    .cover { height: 297mm; margin: 0; }
+  }
   @media screen {
-    body { max-width: 900px; margin: 0 auto; padding: 0 16px; }
-    section { margin-top: 48px; }
+    body { max-width: 920px; margin: 0 auto; padding: 0 16px 40px; background: #fff; }
+    .cover { min-height: 860px; border-radius: 0 0 16px 16px; margin: 0 -16px; padding: 64px 48px 40px; }
+    .summary, .toc, section { margin-top: 48px; }
   }
   @media screen and (max-width: 640px) {
-    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .grid2, .grid3, .grid4, .cover .meta { grid-template-columns: 1fr; }
+    .toc-part ol { columns: 1; }
     table { display: block; overflow-x: auto; }
-    .cover { padding: 0; height: auto; min-height: 90vh; }
+    .cover { padding: 40px 20px 28px; min-height: 0; }
     .cover h1 { font-size: 24pt; }
   }
 </style>
@@ -89,57 +174,118 @@
 
 <!-- ================= CAPA ================= -->
 <div class="cover">
-  <div class="kicker">SAP S/4HANA · Fiori Elements · TypeSafe Jev</div>
+  <svg class="rings" viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(140,195,255,.10)" stroke-width="1"/>
+    <circle cx="100" cy="100" r="76" fill="none" stroke="rgba(140,195,255,.12)" stroke-width="1"/>
+    <circle cx="100" cy="100" r="56" fill="none" stroke="rgba(140,195,255,.16)" stroke-width="1"/>
+    <circle cx="100" cy="100" r="36" fill="rgba(10,110,209,.18)" stroke="rgba(140,195,255,.25)" stroke-width="1"/>
+    <circle cx="157" cy="168" r="3" fill="#8cc3ff"/><circle cx="44" cy="58" r="2" fill="#8cc3ff"/><circle cx="178" cy="88" r="2.2" fill="#ffffff"/>
+  </svg>
+  <div class="kicker">SAP S/4HANA · RAP · Fiori Elements · TypeSafe Jev</div>
   <h1>POC Antifraude em Pedidos de Compra</h1>
-  <div class="sub">Indicadores no ABAP · decisão tipada do Jev · classificação no ABAP · modo sombra</div>
-  <div class="rule"></div>
-  <div class="sub" style="font-size:12pt;">Documentação funcional, técnica e de custo</div>
-  <div class="meta">
-    <p><b>Pacote:</b> ZPOC_JEV &nbsp;·&nbsp; <b>Transporte:</b> S4HK913463</p>
-    <p><b>Serviço:</b> ZUI_POC_JEV_O4 (OData V4 · UI)</p>
-    <p><b>App:</b> zpocjev.antifraude (Fiori Elements V4, List Report + Object Page)</p>
-    <p><b>Modelo:</b> typesafe/jev-1.13 via OpenRouter</p>
-    <p><b>Sistema:</b> S/4HANA on-premise, ABAP 758, HANA</p>
-    <p><b>Versão do documento:</b> 1.0 &nbsp;·&nbsp; <b>Data:</b> 06/10/2026</p>
+  <p class="lead">Indicadores de risco calculados no ABAP, decisão tipada do Jev e classificação no ABAP, sem bloquear nada enquanto o modelo é calibrado.</p>
+  <div class="chips">
+    <span class="chip on">Modo sombra</span>
+    <span class="chip">7 perguntas tipadas</span>
+    <span class="chip">Payload anônimo</span>
+    <span class="chip">Falha segura</span>
   </div>
+  <div class="flow">
+    <div><i>1</i><b>Indicadores no ABAP</b><span>CDS calculam dias, razões e flags do pedido, fornecedor e comprador</span></div>
+    <div><i>2</i><b>Perguntas ao Jev</b><span>state anônimo + 5 noul, 1 score e 1 choice numa chamada</span></div>
+    <div><i>3</i><b>Classificação no ABAP</b><span>regra dura e limiares sobre o maior risco</span></div>
+    <div><i>4</i><b>Log em modo sombra</b><span>ZPOC_JEV_AVAL guarda tudo para calibrar</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="doc">Documentação funcional, técnica e de custo</div>
+  <div class="meta">
+    <div><span>Pacote · Transporte</span><b>ZPOC_JEV · S4HK913463</b></div>
+    <div><span>Serviço</span><b>ZUI_POC_JEV_O4 (OData V4 · UI)</b></div>
+    <div><span>App</span><b>zpocjev.antifraude · List Report + Object Page</b></div>
+    <div><span>Modelo</span><b>typesafe/jev-1.13 via OpenRouter</b></div>
+    <div><span>Sistema</span><b>S/4HANA on-premise · ABAP 758 · HANA</b></div>
+    <div><span>Repositório</span><b>github.com/seccoit/sap-s4-antifraude-jev</b></div>
+  </div>
+  <div class="foot"><span>Versão 1.1 · 07/10/2026</span><span>Uso interno</span></div>
+</div>
+
+<!-- ================= RESUMO EXECUTIVO ================= -->
+<div class="summary">
+  <p class="eyebrow">Resumo executivo</p>
+  <h2 class="page-title" style="border:0;padding:0;">A POC em uma página</h2>
+  <p class="page-lead">Cada pedido de compra recebe indicadores de risco calculados no S/4HANA. O Jev estima a probabilidade de
+  cinco tipos de fraude, e o ABAP decide entre liberar, mandar para aprovação ou bloquear, por enquanto só registrando.</p>
+
+  <div class="grid4">
+    <div class="kpi-card no-break"><div class="kpi">24</div><div class="kpi-l">objetos ABAP no pacote ZPOC_JEV</div></div>
+    <div class="kpi-card no-break"><div class="kpi">7</div><div class="kpi-l">perguntas tipadas por avaliação</div></div>
+    <div class="kpi-card no-break"><div class="kpi">US$ 0,09</div><div class="kpi-l">a cada mil avaliações (custo medido)</div></div>
+    <div class="kpi-card no-break"><div class="kpi">21 / 21</div><div class="kpi-l">testes automáticos do app passando</div></div>
+  </div>
+
+  <div class="grid3" style="margin-top:16px;">
+    <div class="card story no-break"><p class="eyebrow">Problema</p><h4>Fraude escondida no fluxo normal</h4>
+      <p class="muted">Fornecedor de fachada, desvio de pagamento, sobrepreço, fracionamento e fraude interna passam pelo processo de compra sem chamar atenção.</p></div>
+    <div class="card story s2 no-break"><p class="eyebrow">Solução</p><h4>Evidência no ABAP, decisão tipada</h4>
+      <p class="muted">O ABAP calcula os indicadores; o Jev devolve probabilidades por tipo de fraude; o ABAP aplica limiares e grava o log.</p></div>
+    <div class="card story s3 no-break"><p class="eyebrow">Resultado</p><h4>Funciona de ponta a ponta</h4>
+      <p class="muted">Avaliações reais gravadas no S/4 com o Jev real. No caso 4500001366 o modelo apontou fornecedor fictício com 0,87.</p></div>
+  </div>
+
+  <h4 style="margin-top:22px;">Situação atual</h4>
+  <table class="no-break">
+    <tr><th style="width:28%">Frente</th><th style="width:18%">Status</th><th>Observação</th></tr>
+    <tr><td>Backend RAP e serviço OData V4</td><td><span class="tag t-green">Pronto</span></td><td>24 objetos ativos, serviço publicado e validado com dados reais</td></tr>
+    <tr><td>App Fiori + integração Jev</td><td><span class="tag t-green">Pronto</span></td><td>Chave só no servidor, payload anônimo, falha segura testada</td></tr>
+    <tr><td>Clean core (ATC)</td><td><span class="tag t-amber">Em refatoração</span></td><td>Troca de tabelas por APIs liberadas e wrapper isolado para documentos de modificação</td></tr>
+    <tr><td>Calibração dos limiares</td><td><span class="tag t-grey">Próximo passo</span></td><td>Depende da ação do aprovador para rotular os casos</td></tr>
+    <tr><td>Hospedagem de produção</td><td><span class="tag t-grey">A decidir</span></td><td>SAP BTP (approuter + destination) ou deploy no S/4 com proxy SICF</td></tr>
+  </table>
 </div>
 
 <!-- ================= SUMÁRIO ================= -->
 <div class="toc">
-  <h2>Sumário</h2>
-  <ol>
-    <li><b>Parte I — Funcional</b>
-      <ol>
-        <li>Objetivo e escopo</li>
-        <li>Fraudes cobertas</li>
-        <li>O que a POC avalia (indicadores)</li>
-        <li>Perguntas ao Jev</li>
-        <li>Como a decisão é tomada</li>
-        <li>A tela</li>
-        <li>Caso real: pedido 4500001366</li>
-      </ol>
-    </li>
-    <li><b>Parte II — Técnica</b>
-      <ol start="8">
-        <li>Arquitetura e fluxo</li>
-        <li>Objetos gerados no backend</li>
-        <li>Camadas CDS e cálculo dos indicadores</li>
-        <li>RAP: ação <code>registrarAvaliacao</code></li>
-        <li>Tabelas Z</li>
-        <li>Frontend e integração com o Jev</li>
-        <li>Segurança e LGPD</li>
-      </ol>
-    </li>
-    <li><b>Parte III — Custo, resultados e próximos passos</b>
-      <ol start="15">
-        <li>Custo</li>
-        <li>Resultados e testes</li>
-        <li>Limitações e riscos</li>
-        <li>Melhorias e roadmap</li>
-        <li>Como executar</li>
-      </ol>
-    </li>
-  </ol>
+  <p class="eyebrow">Conteúdo</p>
+  <h2 class="page-title" style="border:0;padding:0;margin-bottom:18px;">Sumário</h2>
+  <div class="toc-part">
+    <div class="hd"><b>Funcional</b><span>Parte I</span></div>
+    <ol>
+      <li><i>1</i>Objetivo e escopo</li>
+      <li><i>2</i>Fraudes cobertas</li>
+      <li><i>3</i>O que a POC avalia</li>
+      <li><i>4</i>Perguntas ao Jev</li>
+      <li><i>5</i>Como a decisão é tomada</li>
+      <li><i>6</i>A tela</li>
+      <li><i>7</i>Casos reais</li>
+    </ol>
+  </div>
+  <div class="toc-part">
+    <div class="hd"><b>Técnica</b><span>Parte II</span></div>
+    <ol>
+      <li><i>8</i>Arquitetura e fluxo</li>
+      <li><i>9</i>Objetos gerados no backend</li>
+      <li><i>10</i>Camadas CDS e indicadores</li>
+      <li><i>11</i>RAP: ação registrarAvaliacao</li>
+      <li><i>12</i>Tabelas Z</li>
+      <li><i>13</i>Frontend e integração com o Jev</li>
+      <li><i>14</i>Segurança e LGPD</li>
+    </ol>
+  </div>
+  <div class="toc-part">
+    <div class="hd"><b>Custo, resultados e próximos passos</b><span>Parte III</span></div>
+    <ol>
+      <li><i>15</i>Custo</li>
+      <li><i>16</i>Resultados e testes</li>
+      <li><i>17</i>Limitações, riscos e clean core</li>
+      <li><i>18</i>Melhorias e roadmap</li>
+      <li><i>19</i>Como executar</li>
+    </ol>
+  </div>
+  <div class="reading">
+    <div class="card no-break"><p class="eyebrow">Gestão</p><b>Resumo executivo, seções 15 e 18</b><p class="muted">Objetivo, custo, situação e próximos passos.</p></div>
+    <div class="card no-break"><p class="eyebrow">Negócio e auditoria</p><b>Parte I e seção 17</b><p class="muted">O que é avaliado, como a decisão é tomada e os casos reais.</p></div>
+    <div class="card no-break"><p class="eyebrow">Time técnico</p><b>Parte II e seção 19</b><p class="muted">Arquitetura, objetos ABAP, contrato da ação, integração e execução.</p></div>
+  </div>
 </div>
 
 <!-- ============================================================= -->
@@ -280,7 +426,7 @@
 </section>
 
 <section>
-  <h3>7. Caso real: pedido 4500001366</h3>
+  <h3>7. Casos reais</h3>
   <p>Primeira avaliação com o Jev real (<code>typesafe/jev-1.13-20260917</code>), em 06/10/2026.</p>
 
   <div class="grid2">
@@ -321,7 +467,7 @@
     para o aprovador olhar. É exatamente para medir casos assim que existe o modo sombra.
   </div>
 
-  <h4>Comparação: pedido 4500001545</h4>
+  <h4 style="break-before:page;page-break-before:always;margin-top:0;">Comparação: pedido 4500001545</h4>
   <p>Pedido de 10 BRL, empresa 1410, de 29/07/2026. O fornecedor também foi cadastrado no mesmo dia, pelo mesmo
   usuário que criou o pedido, sem histórico. A diferença: <b>existe uma fatura com data anterior à criação do pedido</b>.
   O material, por outro lado, já tinha sido comprado desse fornecedor.</p>
@@ -634,7 +780,7 @@ npm start                  # http://localhost:8080/index.html</code></pre>
   </table>
 
   <div class="footer-note">
-    POC Antifraude Jev · Documentação v1.0 · 06/10/2026 · Pacote ZPOC_JEV · Transporte S4HK913463
+    POC Antifraude Jev · Documentação v1.1 · 07/10/2026 · Pacote ZPOC_JEV · Transporte S4HK913463
   </div>
 </section>
 
