@@ -350,49 +350,8 @@
   <p>A chamada ao Jev sai do front, não do ABAP, passando por uma rota do próprio app que injeta a chave no
   servidor. O ABAP só expõe os indicadores e recebe as probabilidades de volta.</p>
 
-  <svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fluxo da POC" style="margin:6px 0;">
-    <style>
-      .lbl{font-family:'Segoe UI',Arial;font-size:12px;fill:#1d2d3e;}
-      .lblw{font-family:'Segoe UI',Arial;font-size:12px;fill:#fff;font-weight:600;}
-      .sub{font-family:'Consolas',monospace;font-size:10px;fill:#5b6b7b;}
-      .subw{font-family:'Consolas',monospace;font-size:10px;fill:#e6edf3;}
-      .arw{stroke:#0a6ed1;stroke-width:1.6;marker-end:url(#a);fill:none;}
-      .num{font-family:'Segoe UI',Arial;font-size:11px;fill:#0854a0;font-weight:700;}
-    </style>
-    <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
-      <path d="M0,0 L7,3 L0,6 Z" fill="#0a6ed1"/></marker></defs>
-
-    <rect x="20" y="20" width="300" height="130" rx="6" fill="#0854a0"/>
-    <text class="lblw" x="34" y="44">S/4HANA (ABAP)</text>
-    <text class="subw" x="34" y="66">CDS de indicadores + AMDP</text>
-    <text class="subw" x="34" y="84">Regra dura (fornecedor bloqueado)</text>
-    <text class="subw" x="34" y="102">RAP: registrarAvaliacao → limiares</text>
-    <text class="subw" x="34" y="120">ZPOC_JEV_AVAL (log) · ZPOC_JEV_CFG</text>
-    <text class="subw" x="34" y="138">OData V4: ZUI_POC_JEV_O4</text>
-
-    <rect x="400" y="20" width="300" height="130" rx="6" fill="#e9730c"/>
-    <text class="lblw" x="414" y="44">App Fiori (navegador)</text>
-    <text class="subw" x="414" y="66">List Report + Object Page</text>
-    <text class="subw" x="414" y="84">JevClient: buildRequest / parseResponse</text>
-    <text class="subw" x="414" y="102">timeout 1500 ms · máx. 3 simultâneas</text>
-    <text class="subw" x="414" y="120">sem nome, código ou usuário no payload</text>
-
-    <rect x="400" y="210" width="300" height="60" rx="6" fill="#0a6ed1"/>
-    <text class="lblw" x="414" y="234">Rota /jev (servidor do app)</text>
-    <text class="subw" x="414" y="254">injeta Authorization: Bearer (chave no .env)</text>
-
-    <rect x="400" y="300" width="300" height="48" rx="6" fill="#107e3e"/>
-    <text class="lblw" x="414" y="320">OpenRouter → TypeSafe Jev</text>
-    <text class="subw" x="414" y="338">POST /api/alpha/decisions · jev-1.13</text>
-
-    <path class="arw" d="M320,60 L400,60"/>
-    <text class="num" x="330" y="52">1 indicadores</text>
-    <path class="arw" d="M550,150 L550,210"/>
-    <text class="num" x="558" y="186">2 state + 7 perguntas</text>
-    <path class="arw" d="M550,270 L550,300"/>
-    <path class="arw" d="M400,120 L320,120"/>
-    <text class="num" x="326" y="138">3 probabilidades</text>
-  </svg>
+  <img src="arquitetura-poc-jev.png" alt="Arquitetura da POC: estação local com app Fiori e servidor UI5, S/4HANA on-premise com OData, RAP, CDS e tabelas Z, OpenRouter/TypeSafe Jev e opção SAP BTP para produção" style="width:100%;height:auto;border:1px solid var(--line);border-radius:6px;margin:6px 0;">
+  <p class="muted">Diagrama no padrão SAP BTP Solution Diagram, gerado com ARC DRAW. Fonte editável: <code>docs/arquitetura-poc-jev.drawio</code>.</p>
 
   <ol>
     <li>O ABAP expõe por OData os pedidos com os indicadores calculados e a regra dura aplicada.</li>
@@ -598,6 +557,23 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
     <li><b>Versão SAPUI5:</b> o app foi feito em 1.136 e o S/4 entrega 1.114. Antes do deploy, é preciso decidir entre atualizar o servidor ou rebaixar o app.</li>
     <li><b>Value helps:</b> os filtros Empresa e Org. compras geram um erro no console, sem efeito na tela.</li>
   </ul>
+
+  <h4>Clean core (ATC)</h4>
+  <p>ATC com a variante <code>ABAP_CLOUD_READINESS</code> em 07/10/2026, sobre os 24 objetos: <b>37 achados de
+  prioridade 1</b>, todos da checagem "Usage of Released APIs". 17 objetos passaram limpos: tabelas, BDEFs, projeções,
+  DDLX, serviço, behavior pool e classe de setup.</p>
+  <table class="no-break">
+    <tr><th>Objeto</th><th class="num">Achados</th><th>Lê diretamente</th></tr>
+    <tr><td><code>ZI_POC_JEV_FORNIND</code></td><td class="num">14</td><td>EKKO, LFA1, LFM1, LFB1, CVI_VEND_LINK, BUT000, LFBK, BUT0BK</td></tr>
+    <tr><td><code>ZI_POC_JEV_PEDIDOITEM</code></td><td class="num">9</td><td>EKKO, EKPO, LFA1, CVI_VEND_LINK, BUT000</td></tr>
+    <tr><td><code>ZI_POC_JEV_FLUXODOC</code></td><td class="num">7</td><td>EKKO, EKBE, RSEG, RBKP</td></tr>
+    <tr><td><code>ZI_POC_JEV_ALTCAD</code></td><td class="num">2</td><td>CDHDR, CDPOS</td></tr>
+    <tr><td><code>ZR_POC_JEV_PEDIDO</code></td><td class="num">2</td><td>EKKO</td></tr>
+    <tr><td><code>ZCL_POC_JEV_HIST_AMDP</code></td><td class="num">2</td><td>EKKO, EKPO (SQLScript)</td></tr>
+    <tr><td><code>ZI_POC_JEV_ITEMIND</code></td><td class="num">1</td><td>EINE</td></tr>
+  </table>
+  <p>A causa é única: as views de indicadores e a AMDP leem tabelas do S/4 em vez das views liberadas
+  (<code>I_*</code>) previstas na gap analysis. O desenho RAP, o serviço e a camada de consumo já estão no padrão.</p>
 </section>
 
 <section>
@@ -619,7 +595,7 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
     <tr><th>#</th><th>Melhoria</th><th>Por quê</th></tr>
     <tr><td>7</td><td>Hospedagem e rota do Jev</td><td>Escolher BTP (approuter + destino) ou S/4 (SICF / proxy reverso) para guardar a chave fora do ambiente local</td></tr>
     <tr><td>8</td><td>Versão SAPUI5 compatível</td><td>Alinhar app (1.136) e servidor (1.114)</td></tr>
-    <tr><td>9</td><td>Autorização (DCL) nas views Z</td><td>Cada usuário vê só os pedidos da sua organização</td></tr>
+    <tr><td>9</td><td>Clean core e autorização: trocar as tabelas pelas views <code>I_*</code> liberadas e ativar DCL nas views Z</td><td>Zera os 37 achados do ATC e cada usuário passa a ver só os pedidos da sua organização</td></tr>
     <tr><td>10</td><td>Integridade do resultado</td><td>Chamada do Jev pelo servidor, ou assinatura da resposta, para o ABAP não depender do que o navegador envia</td></tr>
     <tr><td>11</td><td>Retry com espera para HTTP 429 na avaliação em lote</td><td>Hoje o limite de chamadas vira INDISPONIVEL</td></tr>
     <tr><td>12</td><td>Performance das views de histórico</td><td>Janelas menores ou materialização para volumes reais</td></tr>
