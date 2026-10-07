@@ -2,64 +2,147 @@
 	xmlns:core="sap.ui.core"
 	xmlns="sap.m"
 	xmlns:form="sap.ui.layout.form">
-	<VBox id="jevSombraBox" width="100%">
+	<VBox
+		id="jevSombraBox"
+		width="100%"
+		busyIndicatorDelay="0"
+		busy="{= ${jev>/busy} || ${jev>/carregando} }">
+
+		<!-- Estado vazio: nunca avaliado -->
+		<IllustratedMessage
+			id="jevVazio"
+			illustrationType="sapIllus-NoEntries"
+			illustrationSize="Small"
+			title="{i18n>vazioTitulo}"
+			description="{i18n>vazioDescricao}"
+			enableVerticalResponsiveness="true"
+			visible="{= ${jev>/carregado} &amp;&amp; !${jev>/avaliado} }" />
+
 		<MessageStrip
-			id="jevSombraStrip"
-			type="Information"
+			id="jevErroCarga"
+			type="Warning"
 			showIcon="true"
-			text="{i18n>msgModoSombra}"
+			text="{jev>/erroCarga}"
+			visible="{= !!${jev>/erroCarga} }"
 			class="sapUiSmallMarginBottom" />
-		<form:Form id="jevUltimaForm" editable="false" visible="{= !!${jev>/ultima} }">
-			<form:layout>
-				<form:ColumnLayout columnsM="2" columnsL="3" columnsXL="4" />
-			</form:layout>
-			<form:formContainers>
-				<form:FormContainer id="jevUltimaContainer" title="{i18n>ultimaChamada}">
-					<form:formElements>
-						<form:FormElement id="jevFeStatus" label="{i18n>status}">
-							<form:fields>
-								<ObjectStatus
-									id="jevStatus"
-									text="{jev>/ultima/status}"
-									state="{= ${jev>/ultima/status} === 'AVALIADO' ? 'Success' : (${jev>/ultima/status} === 'INDISPONIVEL' ? 'Warning' : 'Error') }" />
-							</form:fields>
-						</form:FormElement>
-						<form:FormElement id="jevFeAcao" label="{i18n>acaoSugerida}" visible="{= !!${jev>/ultima/acaoSugerida} }">
-							<form:fields>
-								<Text id="jevAcao" text="{jev>/ultima/acaoSugerida}" />
-							</form:fields>
-						</form:FormElement>
-						<form:FormElement id="jevFeMotivo" label="{i18n>motivo}" visible="{= !!${jev>/ultima/motivo} }">
-							<form:fields>
-								<Text id="jevMotivo" text="{jev>/ultima/motivo}" />
-							</form:fields>
-						</form:FormElement>
-						<form:FormElement id="jevFeModelo" label="{i18n>modelo}" visible="{= !!${jev>/ultima/modelo} }">
-							<form:fields>
-								<Text id="jevModelo" text="{jev>/ultima/modelo}" />
-							</form:fields>
-						</form:FormElement>
-						<form:FormElement id="jevFeCusto" label="{i18n>custo}" visible="{= !!${jev>/ultima/custo} }">
-							<form:fields>
-								<Text id="jevCusto" text="{jev>/ultima/custo}" />
-							</form:fields>
-						</form:FormElement>
-						<form:FormElement id="jevFeLatencia" label="{i18n>latencia}">
-							<form:fields>
-								<Text id="jevLatencia" text="{jev>/ultima/latenciaMs} ms ({i18n>limite} {jev>/timeoutMs} ms) - {jev>/ultima/quando}" />
-							</form:fields>
-						</form:FormElement>
-					</form:formElements>
-				</form:FormContainer>
-			</form:formContainers>
-		</form:Form>
-		<Panel
-			id="jevPayloadPanel"
-			headerText="{i18n>payloadEnviado}"
-			expandable="true"
-			expanded="false"
-			visible="{= !!${jev>/ultima/payload} }">
-			<Text id="jevPayload" text="{jev>/ultima/payload}" renderWhitespace="true" class="sapUiTinyMargin" />
+
+		<VBox id="jevAvaliadoBox" width="100%" visible="{= !!${jev>/avaliado} }">
+			<!-- 1. Veredito -->
+			<HBox id="jevVereditoBox" alignItems="Center" wrap="Wrap" class="sapUiSmallMarginBottom">
+				<core:Icon
+					id="jevVereditoIcone"
+					src="{jev>/veredito/icone}"
+					color="{jev>/veredito/cor}"
+					size="2.5rem"
+					decorative="true"
+					class="sapUiSmallMarginEnd" />
+				<VBox id="jevVereditoTextos">
+					<ObjectStatus
+						id="jevVereditoEtiqueta"
+						text="{jev>/veredito/etiqueta}"
+						state="{jev>/veredito/estado}"
+						inverted="true"
+						stateAnnouncementText="{jev>/veredito/etiqueta}" />
+					<Title
+						id="jevVereditoTitulo"
+						text="{jev>/veredito/titulo}"
+						titleStyle="H3"
+						level="H3"
+						wrapping="true" />
+					<Text
+						id="jevVereditoMotivo"
+						text="{jev>/veredito/motivo}"
+						visible="{= !!${jev>/veredito/motivo} }" />
+				</VBox>
+			</HBox>
+			<MessageStrip
+				id="jevSombraStrip"
+				type="Information"
+				showIcon="true"
+				text="{i18n>msgModoSombra}"
+				class="sapUiSmallMarginBottom" />
+
+			<!-- 2. Por que -->
+			<Text id="jevPorQue" text="{jev>/porQue}" visible="{= !!${jev>/porQue} }" class="sapUiSmallMarginBottom" />
+
+			<!-- 3. Os 5 riscos -->
+			<VBox id="jevRiscosBox" width="100%" visible="{= !!${jev>/mostrarRiscos} }" class="sapUiSmallMarginBottom">
+				<Title id="jevRiscosTitulo" text="{i18n>riscosTitulo}" level="H4" titleStyle="H5" />
+				<VBox id="jevRiscosLista" width="100%" items="{path: 'jev>/riscos', templateShareable: false}">
+					<VBox id="jevRiscoItem" width="100%" class="sapUiTinyMarginTop">
+						<Label id="jevRiscoRotulo" text="{jev>rotulo}" wrapping="true" />
+						<ProgressIndicator
+							id="jevRiscoBarra"
+							percentValue="{jev>pct}"
+							displayValue="{jev>valor}"
+							state="{jev>estado}"
+							tooltip="{jev>rotulo}"
+							displayOnly="true"
+							width="100%"
+							height="1.375rem" />
+					</VBox>
+				</VBox>
+				<Text id="jevLegenda" text="{jev>/legenda}" class="sapUiTinyMarginTop" />
+			</VBox>
+		</VBox>
+
+		<!-- 4. Sinais encontrados neste pedido (indicadores atuais do Pedido) -->
+		<VBox id="jevSinaisBox" width="100%" visible="{= !!${jev>/carregado} }" class="sapUiSmallMarginBottom">
+			<Title id="jevSinaisTitulo" text="{i18n>sinaisTitulo}" level="H4" titleStyle="H5" />
+			<List
+				id="jevSinaisLista"
+				items="{path: 'jev>/sinais', templateShareable: false}"
+				noDataText="{i18n>sinaisNenhum}"
+				showSeparators="None"
+				backgroundDesign="Transparent">
+				<StandardListItem id="jevSinalItem" title="{jev>texto}" icon="sap-icon://warning2" wrapping="true" />
+			</List>
+		</VBox>
+
+		<!-- 5. Rodape -->
+		<Text id="jevRodape" text="{jev>/rodape}" visible="{= !!${jev>/rodape} }" class="sapUiSmallMarginBottom" />
+
+		<!-- 6. Detalhes tecnicos (ultima chamada desta sessao) -->
+		<Panel id="jevPayloadPanel" headerText="{i18n>detalhesTecnicos}" expandable="true" expanded="false" width="auto">
+			<Text id="jevSemChamada" text="{i18n>detalhesSemChamada}" visible="{= !${jev>/ultima} }" />
+			<form:Form id="jevUltimaForm" editable="false" visible="{= !!${jev>/ultima} }">
+				<form:layout>
+					<form:ColumnLayout columnsM="2" columnsL="3" columnsXL="4" />
+				</form:layout>
+				<form:formContainers>
+					<form:FormContainer id="jevUltimaContainer" title="{i18n>ultimaChamada}">
+						<form:formElements>
+							<form:FormElement id="jevFeStatus" label="{i18n>status}">
+								<form:fields>
+									<Text id="jevStatus" text="{jev>/ultima/status}" />
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement id="jevFeMotivo" label="{i18n>motivo}" visible="{= !!${jev>/ultima/motivo} }">
+								<form:fields>
+									<Text id="jevMotivo" text="{jev>/ultima/motivo}" />
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement id="jevFeModelo" label="{i18n>modelo}" visible="{= !!${jev>/ultima/modelo} }">
+								<form:fields>
+									<Text id="jevModelo" text="{jev>/ultima/modelo}" />
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement id="jevFeCusto" label="{i18n>custo}" visible="{= !!${jev>/ultima/custo} }">
+								<form:fields>
+									<Text id="jevCusto" text="{jev>/ultima/custo}" />
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement id="jevFeLatencia" label="{i18n>latencia}">
+								<form:fields>
+									<Text id="jevLatencia" text="{jev>/ultima/latenciaMs} ms ({i18n>limite} {jev>/timeoutMs} ms) - {jev>/ultima/quando}" />
+								</form:fields>
+							</form:FormElement>
+						</form:formElements>
+					</form:FormContainer>
+				</form:formContainers>
+			</form:Form>
+			<Text id="jevPayload" text="{jev>/ultima/payload}" renderWhitespace="true" visible="{= !!${jev>/ultima/payload} }" class="sapUiTinyMargin" />
+			<Text id="jevHistoricoNota" text="{i18n>detalhesHistorico}" class="sapUiTinyMarginTop" />
 		</Panel>
 	</VBox>
 </core:FragmentDefinition>

@@ -7,7 +7,7 @@
     "start": "ui5 serve --port 8080 --open index.html",
     "start-noopen": "ui5 serve --port 8080",
     "mock-jev": "node mock-jev/server.js",
-    "test": "node --test test/unit/JevClient.test.js test/unit/AvaliacaoService.test.js test/unit/jevProxy.test.js",
+    "test": "node --test test/unit/JevClient.test.js test/unit/AvaliacaoService.test.js test/unit/jevProxy.test.js test/unit/Explicacao.test.js",
     "lint": "ui5lint"
   },
   "devDependencies": {
