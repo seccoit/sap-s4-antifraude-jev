@@ -1,6 +1,12 @@
 # Contrato do backend — POC antifraude (ZPOC_JEV)
 
-Status em 2026-10-06: **ativo e publicado** (pacote `ZPOC_JEV`, transporte `S4HK913463`).
+Status em 2026-10-07: **ativo e publicado** (pacote `ZPOC_JEV` + subpacote `ZPOC_JEV_WRAP`, transporte `S4HK913463`).
+
+> **Refatoração clean core (07/10/2026): o contrato do front NÃO mudou.** Os nomes de entidades, campos, navegações, ação e parâmetros são os mesmos, e os valores são idênticos aos de antes (regressão em `clean-core-analysis.md` §11).
+> Há três diferenças, todas não quebrantes:
+> 1. `SuplrHistStdDevAmount` e `AmountZScore` agora são **campos calculados (elementos virtuais)**: aparecem normalmente no `$select`/resposta, mas **não servem para `$filter` nem `$orderby`**.
+> 2. Dois campos técnicos novos em `Pedido`, ocultos na UI: `SuplrHistSumAmount` (Decimal 15,2) e `SuplrHistSumSqAmount` (Double), usados para calcular os dois campos acima. O front pode ignorá-los.
+> 3. Semântica: `SharedBankAccount`/`SharedBankOtherCount` contam só pelo cadastro do BP; `CreatorPostedGR` ignora recebimentos estornados. Nos dados atuais, os valores não mudaram.
 
 ## Endpoint
 
@@ -46,13 +52,15 @@ O único texto identificador é `SupplierName`, usado só na exibição. Nenhum 
 | SupplierIsBlocked | abap_boolean → Boolean | LFA1-SPERR/SPERM/SPERZ ou LFM1-SPERM |
 | MasterDataChanges30d | int4 → Int32 | documentos de modificação de banco/endereço em [D-30, D] (KRED, BUPA_BUP, BUPA_BANK, BUPA_ADR), sem contar o dia da criação |
 | DaysSinceLastMDChange | int4 → Int32 | dias desde a última alteração dentro da janela; **-1 = nenhuma** |
-| SharedBankAccount | abap_boolean → Boolean | a conta é usada por outro fornecedor/BP (LFBK/BUT0BK) |
-| SharedBankOtherCount | int4 → Int32 | nº de outros fornecedores/BPs com a mesma conta |
+| SharedBankAccount | abap_boolean → Boolean | a conta é usada por outro BP (I_BusinessPartnerBank / BUT0BK) |
+| SharedBankOtherCount | int4 → Int32 | nº de outros BPs com a mesma conta |
 | SuplrHistPOCount | int4 → Int32 | pedidos anteriores ao fornecedor (24 meses, mesma moeda) |
-| SuplrHistAvgAmount / SuplrHistStdDevAmount | dec(15,2) → Decimal | média e desvio padrão (amostral) do valor desses pedidos |
+| SuplrHistAvgAmount | dec(15,2) → Decimal | média do valor desses pedidos (truncada em 2 casas) |
+| SuplrHistStdDevAmount | dec(15,2) → Decimal | desvio padrão amostral, **campo calculado** (`ZCL_POC_JEV_STATS`): não filtrável nem ordenável |
+| SuplrHistSumAmount / SuplrHistSumSqAmount | dec(15,2) / fltp → Decimal / Double | técnicos (ocultos na UI): soma e soma dos quadrados, base do desvio e do z-score |
 | **Pedido** | | |
 | AmountToSuplrAvgRatio | dec(11,4) → Decimal | valor / média do fornecedor (0 = sem histórico) |
-| AmountZScore | dec(11,4) → Decimal | (valor - média) / desvio (0 se desvio = 0) |
+| AmountZScore | dec(11,4) → Decimal | (valor - média) / desvio (0 se desvio = 0), **campo calculado**: não filtrável nem ordenável |
 | MaxPriceToInfoRecordRatio | dec(15,4) → Decimal | pior item: preço unitário / registro info (0 = não comparável) |
 | MaxPriceToMaterialAvgRatio | dec(15,4) → Decimal | pior item: preço / média histórica do material (24m, mesma moeda e unidade de preço) |
 | MaxQtyToHistRatio | dec(15,4) → Decimal | pior item: quantidade / média do fornecedor+material |
@@ -63,7 +71,7 @@ O único texto identificador é `SupplierName`, usado só na exibição. Nenhum 
 | SuplrPOCount24h | int4 → Int32 | outros pedidos ao fornecedor em D-1..D (aproximação por data) |
 | SuplrPOCount7d | int4 → Int32 | outros pedidos ao fornecedor em D-7..D |
 | BuyerSupplierSharePct | dec(7,2) → Decimal | % do fornecedor nas compras do criador (12 meses, mesma moeda) |
-| CreatorPostedGR | abap_boolean → Boolean | o criador do pedido lançou entrada de mercadoria (EKBE VGABE=1) |
+| CreatorPostedGR | abap_boolean → Boolean | o criador do pedido lançou entrada de mercadoria (documento de material 101 não estornado) |
 | **Regra / última avaliação** | | |
 | RuleClassification | char15 → String | `BLOQUEIO_REGRA` (fornecedor bloqueado: **não chamar o Jev**) ou `AVALIAR_JEV` |
 | LastAvalTimestamp | timestampl → Decimal(21,7) | timestamp da última avaliação (0 = nenhuma) |

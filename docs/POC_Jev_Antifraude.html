@@ -4,169 +4,194 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>POC Antifraude Jev — Documentação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap">
 <style>
+  /* Design system Moovi (C:\Criativos\src\design\moovi-identidade-visual.md).
+     Híbrido para impressão: capa e resumo escuros; conteúdo claro com os acentos da marca. */
   :root {
-    --sap:  #0a6ed1;
-    --sap-dark: #0854a0;
-    --navy: #0b2545;
-    --navy-2: #12355f;
-    --ink:  #1d2d3e;
-    --muted:#5b6b7b;
-    --line: #dbe3ec;
-    --bg-soft: #f4f7fb;
-    --bg-blue: #eaf3fd;
-    --green:#107e3e;
-    --amber:#e9730c;
-    --red:  #bb0000;
-    --grey: #6a6d70;
-    --violet:#7b1fa2;
+    --mv-bg: #060816;
+    --mv-bg-deep: #03040D;
+    --mv-card: #0E1124;
+    --mv-panel: #141935;
+    --mv-white: #FFFFFF;
+    --mv-muted: #A9B0CB;
+    --mv-pink: #E84068;
+    --mv-coral: #F87050;
+    --mv-gradient: linear-gradient(90deg, var(--mv-pink), var(--mv-coral));
+    --mv-line: rgba(255,255,255,.08);
+    --mv-line-strong: rgba(255,255,255,.16);
+    /* conteúdo claro */
+    --ink: #060816;
+    --ink-2: #3D4466;
+    --soft: #F3F4F9;
+    --soft-2: #E9EBF4;
+    --rule: rgba(6,8,22,.10);
+    --green: #12805C;
+    --amber: #D9690B;
+    --red: #C8203F;
+    --grey: #6B7190;
+    --font: "Montserrat", "Segoe UI", system-ui, sans-serif;
   }
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  html { font-family: "Segoe UI", "Segoe UI Variable", Arial, sans-serif; color: var(--ink); font-size: 10.2pt; line-height: 1.55; }
+  html { font-family: var(--font); color: var(--ink-2); font-size: 9.4pt; line-height: 1.65; }
   body { margin: 0; background: #fff; }
 
+  .hl { background: var(--mv-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+        -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
   /* ---------- tipografia ---------- */
-  h1,h2,h3,h4 { color: var(--navy); line-height: 1.25; }
-  h3 { font-size: 13pt; margin: 26px 0 10px; padding-left: 12px; border-left: 4px solid var(--sap);
+  h1, h2, h3, h4 { font-family: var(--font); color: var(--ink); font-weight: 800; text-wrap: balance; }
+  h2 { font-size: 15pt; letter-spacing: -0.03em; line-height: 1.15; }
+  h3 { font-size: 12.6pt; letter-spacing: -0.02em; line-height: 1.25; margin: 30px 0 10px;
        break-after: avoid; page-break-after: avoid; }
-  h4 { font-size: 10.8pt; margin: 18px 0 6px; color: var(--sap-dark); break-after: avoid; page-break-after: avoid; }
+  h3::before { content: ""; display: block; width: 26px; height: 3px; border-radius: 2px; background: var(--mv-pink); margin-bottom: 9px; }
+  h4 { font-size: 10pt; letter-spacing: -0.01em; margin: 20px 0 6px; break-after: avoid; page-break-after: avoid; }
   p { margin: 8px 0; }
-  ul, ol { padding-left: 20px; }
-  li { margin: 3px 0; }
-  code, pre { font-family: "Cascadia Code", "Consolas", monospace; font-size: 8.8pt; }
-  code { background: var(--bg-blue); padding: 1px 5px; border-radius: 4px; color: var(--sap-dark); }
-  pre { background: var(--navy); color: #e6edf3; padding: 14px 16px; border-radius: 8px;
-        overflow-x: auto; line-height: 1.45; white-space: pre; border-left: 4px solid var(--sap); }
-  pre code { background: none; color: inherit; padding: 0; }
-  b, strong { color: var(--navy); }
+  ul, ol { padding-left: 18px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--mv-pink); }
+  b, strong { color: var(--ink); font-weight: 700; }
+  code, pre { font-family: "Cascadia Code", "Consolas", monospace; font-size: 8.3pt; }
+  code { background: var(--soft); border: 1px solid var(--rule); padding: 0 5px; border-radius: 6px; color: #B32950; }
+  pre { background: var(--mv-card); color: #E6E8F2; padding: 14px 16px; border-radius: 14px; line-height: 1.5;
+        overflow-x: auto; white-space: pre; border: 1px solid var(--mv-line); }
+  pre code { background: none; border: 0; color: inherit; padding: 0; }
+  .muted { color: var(--grey); }
 
   /* ---------- abertura das partes ---------- */
   section { break-before: page; page-break-before: always; }
   section > h2:first-child {
-    margin: 0 0 22px; padding: 22px 26px 20px; border: 0; border-radius: 12px;
-    background: linear-gradient(120deg, var(--navy) 0%, var(--navy-2) 55%, var(--sap-dark) 100%);
-    color: #fff; font-size: 20pt; letter-spacing: .2px; position: relative; overflow: hidden;
+    margin: 0 0 24px; padding: 26px 28px; border-radius: 24px; background: var(--mv-bg); color: #fff;
+    font-size: 21pt; letter-spacing: -0.035em; line-height: 1.1; border: 0;
   }
-  section > h2:first-child::after {
-    content: ""; position: absolute; right: -40px; top: -60px; width: 220px; height: 220px; border-radius: 50%;
-    border: 28px solid rgba(255,255,255,.07);
-  }
-  h2 { font-size: 16pt; border-bottom: 2px solid var(--sap); padding-bottom: 4px; }
+  section > h2:first-child small { display: block; font-size: 7.4pt; font-weight: 700; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--mv-pink); margin-bottom: 8px; }
 
   /* ---------- tabelas ---------- */
-  table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 12px 0; font-size: 9.2pt;
-          border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-  th, td { padding: 7px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
-  th { background: var(--navy-2); color: #fff; font-weight: 600; font-size: 8.8pt; letter-spacing: .2px; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 12px 0; font-size: 8.6pt;
+          border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+  th, td { padding: 8px 11px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+  th { background: var(--mv-card); color: #fff; font-weight: 700; font-size: 7.8pt; letter-spacing: .06em; text-transform: uppercase; }
   tr:last-child td { border-bottom: 0; }
-  tr:nth-child(even) td { background: var(--bg-soft); }
+  tr:nth-child(even) td { background: var(--soft); }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   tr { break-inside: avoid; page-break-inside: avoid; }
 
-  .muted { color: var(--muted); }
-  .tag { display:inline-block; padding:1px 8px; border-radius:10px; font-size:7.8pt; font-weight:700; color:#fff; white-space: nowrap; letter-spacing:.2px; }
+  .tag { display:inline-block; padding: 1px 9px; border-radius: 6px; font-size: 7.2pt; font-weight: 800; color:#fff;
+         white-space: nowrap; letter-spacing: .08em; text-transform: uppercase; }
   .t-green{background:var(--green);} .t-amber{background:var(--amber);}
-  .t-red{background:var(--red);} .t-grey{background:var(--grey);} .t-sap{background:var(--sap);}
+  .t-red{background:var(--red);} .t-grey{background:var(--grey);} .t-sap{background:var(--mv-panel);}
 
   /* ---------- avisos ---------- */
-  .callout { position: relative; border: 1px solid #cfe2f8; background: var(--bg-blue);
-             padding: 12px 16px 12px 46px; margin: 16px 0; border-radius: 10px; break-inside: avoid; page-break-inside: avoid; }
-  .callout::before { content: "i"; position: absolute; left: 14px; top: 12px; width: 20px; height: 20px; border-radius: 50%;
-             background: var(--sap); color: #fff; font: 700 11pt/20px Georgia, serif; text-align: center; }
-  .callout.warn { background: #fff4e8; border-color: #f6d3ae; }
-  .callout.warn::before { content: "!"; background: var(--amber); font-family: "Segoe UI", Arial, sans-serif; }
-  .callout.key { background: #ebf6ef; border-color: #b9dfc6; }
-  .callout.key::before { content: "✓"; background: var(--green); font-family: "Segoe UI Symbol", "Segoe UI", sans-serif; font-size: 10pt; }
+  .callout { position: relative; background: var(--soft); border: 1px solid var(--rule); border-radius: 16px;
+             padding: 13px 16px 13px 50px; margin: 16px 0; break-inside: avoid; page-break-inside: avoid; }
+  .callout::before { content: "i"; position: absolute; left: 15px; top: 13px; width: 22px; height: 22px; border-radius: 8px;
+             background: var(--mv-card); color: var(--mv-coral); font: 800 10pt/22px var(--font); text-align: center; }
+  .callout.warn::before { content: "!"; }
+  .callout.key::before { content: "✓"; font-family: "Segoe UI Symbol", var(--font); }
 
   /* ---------- cartões ---------- */
   .no-break { break-inside: avoid; page-break-inside: avoid; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: #fff;
-          box-shadow: 0 1px 0 rgba(11,37,69,.04); }
-  .card h4 { margin-top: 0; color: var(--sap-dark); }
+  .card { border: 1px solid var(--rule); border-radius: 20px; padding: 14px 18px; background: #fff; }
+  .card h4 { margin-top: 0; }
   .card table { margin: 6px 0 0; }
-  .kpi { font-size: 19pt; font-weight: 700; color: var(--sap-dark); line-height: 1.1; font-variant-numeric: tabular-nums; }
-  .kpi-l { font-size: 8.6pt; color: var(--muted); margin-top: 4px; }
-  img { max-width: 100%; }
+  .kpi { font-size: 20pt; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .kpi-l { font-size: 7.8pt; color: var(--grey); margin-top: 6px; }
+  img { max-width: 100%; border-radius: 16px; }
+  .footer-note { font-size: 7.6pt; color: var(--grey); text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid var(--rule); }
+  .eyebrow { font-size: 7.4pt; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--mv-pink); margin: 0 0 6px; }
 
-  .footer-note { font-size: 8pt; color: var(--muted); text-align: center; margin-top: 30px;
-                 padding-top: 10px; border-top: 1px solid var(--line); }
+  /* ---------- páginas escuras (capa e resumo) ---------- */
+  .cover, .summary { page: dark; position: relative; overflow: hidden; background: var(--mv-bg); color: var(--mv-muted);
+                     break-after: page; page-break-after: always; }
+  .cover b, .summary b, .cover strong, .summary strong { color: #fff; }
 
-  /* ---------- capa ---------- */
-  .cover { position: relative; overflow: hidden; color: #fff; break-after: page; page-break-after: always;
-           background: radial-gradient(1200px 700px at 110% -10%, #1a5fb4 0%, rgba(26,95,180,0) 60%),
-                       linear-gradient(160deg, #071a33 0%, var(--navy) 45%, var(--navy-2) 100%);
-           display: flex; flex-direction: column; padding: 26mm 22mm 20mm; }
-  .cover .rings { position: absolute; right: -60mm; top: -40mm; width: 190mm; height: 190mm; pointer-events: none; }
-  .cover .kicker { font-weight: 700; letter-spacing: 3px; font-size: 9.5pt; text-transform: uppercase; color: #8cc3ff; }
-  .cover h1 { font-size: 34pt; line-height: 1.08; margin: 14px 0 12px; color: #fff; max-width: 150mm; }
-  .cover .lead { font-size: 13pt; color: #c9dcf3; max-width: 140mm; margin: 0; }
-  .cover .chips { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; }
-  .cover .chip { border: 1px solid rgba(255,255,255,.35); border-radius: 20px; padding: 3px 12px; font-size: 9pt; color: #e6f0fb; }
-  .cover .chip.on { background: #107e3e; border-color: #107e3e; color: #fff; font-weight: 600; }
+  .cover { display: flex; flex-direction: column; padding: 24mm 22mm 18mm; }
+  .cover .glow { position: absolute; right: -70mm; top: -70mm; width: 200mm; height: 200mm; border-radius: 50%;
+                 background: radial-gradient(circle, rgba(232,64,104,.16) 0%, rgba(248,112,80,.06) 40%, rgba(6,8,22,0) 70%); }
+  .cover .logo { display: inline-block; font-weight: 800; font-size: 13pt; letter-spacing: -0.03em; }
+  .cover .eyebrow { display: flex; align-items: center; gap: 10px; margin-top: 30mm; }
+  .cover .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--mv-pink); }
+  .cover h1 { font-size: 36pt; line-height: 1.02; letter-spacing: -0.04em; color: #fff; margin: 10px 0 14px; max-width: 160mm; }
+  .cover .lead { font-size: 11pt; line-height: 1.7; color: var(--mv-muted); max-width: 125mm; margin: 0; }
+  .cover .chips { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .cover .chip { border: 1px solid var(--mv-line-strong); border-radius: 6px; padding: 3px 10px; font-size: 7.8pt; color: var(--mv-muted); }
+  .cover .pill { background: var(--mv-gradient); color: var(--mv-bg); font-weight: 800; border-radius: 999px; padding: 5px 14px; font-size: 8pt;
+                 box-shadow: 0 8px 28px rgba(232,64,104,.3); }
+  .cover .flow { margin-top: 22mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .cover .flow div { background: var(--mv-card); border: 1px solid var(--mv-line); border-radius: 16px; padding: 14px 14px 12px; }
+  .cover .flow i { font-style: normal; display: block; font-size: 22pt; font-weight: 800; letter-spacing: -0.05em; line-height: .9; }
+  .cover .flow b { display: block; font-size: 8.6pt; margin: 10px 0 4px; letter-spacing: -0.01em; }
+  .cover .flow span { display: block; font-size: 7.4pt; line-height: 1.5; }
   .cover .spacer { flex: 1; }
-  .cover .doc { font-size: 11pt; color: #fff; font-weight: 600; margin-bottom: 12px; letter-spacing: .3px; }
-  .cover .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .cover .meta div { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 9px 12px; }
-  .cover .meta span { display: block; font-size: 7.6pt; text-transform: uppercase; letter-spacing: 1.4px; color: #8cc3ff; }
-  .cover .meta b { color: #fff; font-weight: 600; font-size: 9.6pt; }
-  .cover .foot { margin-top: 16px; font-size: 8.5pt; color: #9fb7d3; display: flex; justify-content: space-between; }
+  .cover .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cover .meta div { background: var(--mv-card); border: 1px solid var(--mv-line); border-radius: 12px; padding: 9px 13px; }
+  .cover .meta span { display: block; font-size: 6.6pt; font-weight: 800; text-transform: uppercase; letter-spacing: .15em; color: var(--mv-pink); }
+  .cover .meta b { font-size: 8.6pt; font-weight: 600; }
+  .cover .foot { margin-top: 14px; font-size: 7.6pt; display: flex; justify-content: space-between; }
 
-  .cover .flow { margin-top: 34mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
-  .cover .flow div { padding: 0 12px 0 0; position: relative; }
-  .cover .flow div::before { content: ""; position: absolute; left: 30px; right: 4px; top: 14px; border-top: 1px dashed rgba(140,195,255,.45); }
-  .cover .flow div:last-child::before { display: none; }
-  .cover .flow i { font-style: normal; display: inline-block; width: 28px; height: 28px; border-radius: 50%; background: #0a6ed1;
-                   color: #fff; font-weight: 700; text-align: center; line-height: 28px; font-size: 10pt; position: relative; }
-  .cover .flow b { display: block; color: #fff; font-size: 10pt; margin: 10px 0 3px; }
-  .cover .flow span { display: block; color: #a9c4e4; font-size: 8.4pt; line-height: 1.4; }
+  .summary { padding: 20mm 20mm 16mm; min-height: 297mm; }
+  .summary h2 { color: #fff; font-size: 22pt; letter-spacing: -0.035em; margin: 0 0 8px; }
+  .summary .lead { font-size: 10pt; line-height: 1.7; max-width: 150mm; margin: 0 0 20px; }
+  .summary .kpi-card { background: var(--mv-card); border: 1px solid var(--mv-line); border-radius: 20px; padding: 16px 16px 14px; }
+  .summary .kpi { color: #fff; }
+  .summary .kpi-l { color: var(--mv-muted); }
+  .summary .story { background: var(--mv-card); border: 1px solid var(--mv-line); border-radius: 20px; padding: 16px 18px; }
+  .summary .story .num { font-size: 16pt; font-weight: 800; letter-spacing: -0.05em; opacity: .55; }
+  .summary .story h4 { color: #fff; margin: 6px 0 6px; font-size: 10pt; }
+  .summary .story p { margin: 0; font-size: 8.4pt; line-height: 1.6; }
+  .summary h4.sec { color: #fff; margin: 24px 0 10px; }
+  .summary table { border-color: var(--mv-line); }
+  .summary th { background: var(--mv-panel); }
+  .summary td { color: var(--mv-muted); border-bottom-color: var(--mv-line); background: var(--mv-card); }
+  .summary tr:nth-child(even) td { background: #11152b; }
+  .summary td:first-child { color: #fff; font-weight: 600; }
+
+  /* ---------- sumário ---------- */
+  .toc { break-after: page; page-break-after: always; }
+  .toc h2 { font-size: 22pt; letter-spacing: -0.035em; margin: 0 0 18px; }
+  .toc-part { border: 1px solid var(--rule); border-radius: 20px; overflow: hidden; margin-bottom: 14px; break-inside: avoid; }
+  .toc-part .hd { background: var(--mv-bg); color: #fff; padding: 12px 18px; display: flex; justify-content: space-between; align-items: baseline; }
+  .toc-part .hd b { color: #fff; font-size: 11pt; font-weight: 800; letter-spacing: -0.02em; }
+  .toc-part .hd span { color: var(--mv-pink); font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; }
+  .toc-part ol { list-style: none; margin: 0; padding: 10px 18px 12px; columns: 2; column-gap: 26px; }
+  .toc-part li { margin: 0; padding: 6px 0; border-bottom: 1px solid var(--rule); break-inside: avoid; color: var(--ink); font-weight: 600; }
+  .toc-part li i { font-style: normal; display: inline-block; width: 26px; color: var(--mv-pink); font-weight: 800; }
   .reading { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
-  .reading .card p { margin: 4px 0 0; }  /* ---------- resumo e sumário ---------- */
-  .summary, .toc { break-after: page; page-break-after: always; }
-  .eyebrow { font-size: 8.5pt; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sap); margin: 0 0 4px; }
-  .page-title { font-size: 22pt; margin: 0 0 6px; color: var(--navy); }
-  .page-lead { color: var(--muted); font-size: 11pt; margin: 0 0 18px; max-width: 160mm; }
-  .kpi-card { border-radius: 12px; padding: 14px 14px 12px; background: var(--bg-blue); border: 1px solid #cfe2f8; }
-  .story { border-top: 4px solid var(--sap); }
-  .story.s2 { border-top-color: var(--navy-2); }
-  .story.s3 { border-top-color: var(--green); }
-  .story h4 { margin: 2px 0 6px; }
-  .status { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: start; margin-top: 6px; }
-  .toc-part { border: 1px solid var(--line); border-radius: 12px; padding: 0; overflow: hidden; margin-bottom: 14px; break-inside: avoid; }
-  .toc-part .hd { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; padding: 10px 16px;
-                  display: flex; justify-content: space-between; align-items: baseline; }
-  .toc-part .hd b { color: #fff; font-size: 12pt; }
-  .toc-part .hd span { color: #8cc3ff; font-size: 8.5pt; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; }
-  .toc-part ol { list-style: none; margin: 0; padding: 8px 16px 10px; columns: 2; column-gap: 24px; }
-  .toc-part li { margin: 0; padding: 5px 0; border-bottom: 1px dotted var(--line); break-inside: avoid; }
-  .toc-part li i { font-style: normal; display: inline-block; width: 22px; color: var(--sap); font-weight: 700; }
+  .reading .card { background: var(--soft); border: 0; }
+  .reading .card b { display: block; }
+  .reading .card p { margin: 4px 0 0; }
 
   /* ---------- página ---------- */
-  @page { size: A4; margin: 20mm 15mm 18mm;
-    @top-left   { content: "POC Antifraude · SAP S/4HANA + TypeSafe Jev"; font: 600 7.6pt "Segoe UI", Arial; color: #0854a0; vertical-align: bottom; padding-bottom: 4mm; }
-    @top-right  { content: "Documentação v1.1"; font: 7.6pt "Segoe UI", Arial; color: #8696a7; vertical-align: bottom; padding-bottom: 4mm; }
-    @bottom-left  { content: "Pacote ZPOC_JEV · uso interno"; font: 7.4pt "Segoe UI", Arial; color: #8696a7; }
-    @bottom-right { content: counter(page) " / " counter(pages); font: 600 7.6pt "Segoe UI", Arial; color: #0854a0; }
+  @page { size: A4; margin: 20mm 16mm 18mm;
+    @top-left   { content: "POC Antifraude · SAP S/4HANA + TypeSafe Jev"; font: 700 7pt Montserrat, "Segoe UI", sans-serif; color: #060816; vertical-align: bottom; padding-bottom: 4mm; }
+    @top-right  { content: "Moovi · Documentação v1.1"; font: 600 7pt Montserrat, "Segoe UI", sans-serif; color: #8A90AA; vertical-align: bottom; padding-bottom: 4mm; }
+    @bottom-left  { content: "Pacote ZPOC_JEV · uso interno"; font: 6.8pt Montserrat, "Segoe UI", sans-serif; color: #8A90AA; }
+    @bottom-right { content: counter(page) " / " counter(pages); font: 800 7pt Montserrat, "Segoe UI", sans-serif; color: #E84068; }
   }
-  @page :first { margin: 0;
+  @page dark { margin: 0;
     @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; }
   }
-  @media print {
-    .cover { height: 297mm; margin: 0; }
-  }
+  @media print { .cover, .summary { height: 297mm; } }
   @media screen {
-    body { max-width: 920px; margin: 0 auto; padding: 0 16px 40px; background: #fff; }
-    .cover { min-height: 860px; border-radius: 0 0 16px 16px; margin: 0 -16px; padding: 64px 48px 40px; }
-    .summary, .toc, section { margin-top: 48px; }
+    body { max-width: 920px; margin: 0 auto; padding: 0 16px 40px; }
+    .cover, .summary { margin: 0 -16px; padding: 56px 44px 40px; border-radius: 0 0 24px 24px; }
+    .summary { border-radius: 24px; margin-top: 24px; min-height: 0; }
+    .toc, section { margin-top: 48px; }
+    .cover .eyebrow { margin-top: 60px; }
+    .cover .flow { margin-top: 48px; }
   }
   @media screen and (max-width: 640px) {
-    .grid2, .grid3, .grid4, .cover .meta { grid-template-columns: 1fr; }
+    .grid2, .grid3, .grid4, .cover .meta, .cover .flow, .reading { grid-template-columns: 1fr; }
     .toc-part ol { columns: 1; }
     table { display: block; overflow-x: auto; }
-    .cover { padding: 40px 20px 28px; min-height: 0; }
-    .cover h1 { font-size: 24pt; }
+    .cover, .summary { padding: 32px 20px; }
+    .cover h1 { font-size: 26pt; }
   }
 </style>
 </head>
@@ -174,30 +199,24 @@
 
 <!-- ================= CAPA ================= -->
 <div class="cover">
-  <svg class="rings" viewBox="0 0 200 200" aria-hidden="true">
-    <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(140,195,255,.10)" stroke-width="1"/>
-    <circle cx="100" cy="100" r="76" fill="none" stroke="rgba(140,195,255,.12)" stroke-width="1"/>
-    <circle cx="100" cy="100" r="56" fill="none" stroke="rgba(140,195,255,.16)" stroke-width="1"/>
-    <circle cx="100" cy="100" r="36" fill="rgba(10,110,209,.18)" stroke="rgba(140,195,255,.25)" stroke-width="1"/>
-    <circle cx="157" cy="168" r="3" fill="#8cc3ff"/><circle cx="44" cy="58" r="2" fill="#8cc3ff"/><circle cx="178" cy="88" r="2.2" fill="#ffffff"/>
-  </svg>
-  <div class="kicker">SAP S/4HANA · RAP · Fiori Elements · TypeSafe Jev</div>
-  <h1>POC Antifraude em Pedidos de Compra</h1>
+  <div class="glow"></div>
+  <div class="logo"><span class="hl">moovi</span></div>
+  <p class="eyebrow">SAP S/4HANA · RAP · Fiori Elements · TypeSafe Jev</p>
+  <h1>POC antifraude em <span class="hl">pedidos de compra</span></h1>
   <p class="lead">Indicadores de risco calculados no ABAP, decisão tipada do Jev e classificação no ABAP, sem bloquear nada enquanto o modelo é calibrado.</p>
   <div class="chips">
-    <span class="chip on">Modo sombra</span>
+    <span class="pill">Modo sombra</span>
     <span class="chip">7 perguntas tipadas</span>
     <span class="chip">Payload anônimo</span>
     <span class="chip">Falha segura</span>
   </div>
   <div class="flow">
-    <div><i>1</i><b>Indicadores no ABAP</b><span>CDS calculam dias, razões e flags do pedido, fornecedor e comprador</span></div>
-    <div><i>2</i><b>Perguntas ao Jev</b><span>state anônimo + 5 noul, 1 score e 1 choice numa chamada</span></div>
-    <div><i>3</i><b>Classificação no ABAP</b><span>regra dura e limiares sobre o maior risco</span></div>
-    <div><i>4</i><b>Log em modo sombra</b><span>ZPOC_JEV_AVAL guarda tudo para calibrar</span></div>
+    <div><i class="hl">01</i><b>Indicadores no ABAP</b><span>CDS calculam dias, razões e flags do pedido, do fornecedor e do comprador</span></div>
+    <div><i class="hl">02</i><b>Perguntas ao Jev</b><span>State anônimo com 5 noul, 1 score e 1 choice numa chamada</span></div>
+    <div><i class="hl">03</i><b>Classificação no ABAP</b><span>Regra dura e limiares sobre o maior risco</span></div>
+    <div><i class="hl">04</i><b>Log em modo sombra</b><span>ZPOC_JEV_AVAL guarda tudo para calibrar</span></div>
   </div>
   <div class="spacer"></div>
-  <div class="doc">Documentação funcional, técnica e de custo</div>
   <div class="meta">
     <div><span>Pacote · Transporte</span><b>ZPOC_JEV · S4HK913463</b></div>
     <div><span>Serviço</span><b>ZUI_POC_JEV_O4 (OData V4 · UI)</b></div>
@@ -206,38 +225,38 @@
     <div><span>Sistema</span><b>S/4HANA on-premise · ABAP 758 · HANA</b></div>
     <div><span>Repositório</span><b>github.com/seccoit/sap-s4-antifraude-jev</b></div>
   </div>
-  <div class="foot"><span>Versão 1.1 · 07/10/2026</span><span>Uso interno</span></div>
+  <div class="foot"><span>Documentação funcional, técnica e de custo · v1.1 · 07/10/2026</span><span>Uso interno</span></div>
 </div>
 
 <!-- ================= RESUMO EXECUTIVO ================= -->
 <div class="summary">
   <p class="eyebrow">Resumo executivo</p>
-  <h2 class="page-title" style="border:0;padding:0;">A POC em uma página</h2>
-  <p class="page-lead">Cada pedido de compra recebe indicadores de risco calculados no S/4HANA. O Jev estima a probabilidade de
+  <h2>A POC <span class="hl">em uma página</span></h2>
+  <p class="lead">Cada pedido de compra recebe indicadores de risco calculados no S/4HANA. O Jev estima a probabilidade de
   cinco tipos de fraude, e o ABAP decide entre liberar, mandar para aprovação ou bloquear, por enquanto só registrando.</p>
 
   <div class="grid4">
-    <div class="kpi-card no-break"><div class="kpi">24</div><div class="kpi-l">objetos ABAP no pacote ZPOC_JEV</div></div>
+    <div class="kpi-card no-break"><div class="kpi">28</div><div class="kpi-l">objetos ABAP, 0 achados de clean core no núcleo</div></div>
     <div class="kpi-card no-break"><div class="kpi">7</div><div class="kpi-l">perguntas tipadas por avaliação</div></div>
-    <div class="kpi-card no-break"><div class="kpi">US$ 0,09</div><div class="kpi-l">a cada mil avaliações (custo medido)</div></div>
-    <div class="kpi-card no-break"><div class="kpi">21 / 21</div><div class="kpi-l">testes automáticos do app passando</div></div>
+    <div class="kpi-card no-break"><div class="kpi"><span class="hl">US$ 0,09</span></div><div class="kpi-l">a cada mil avaliações (custo medido)</div></div>
+    <div class="kpi-card no-break"><div class="kpi">21/21</div><div class="kpi-l">testes automáticos do app passando</div></div>
   </div>
 
-  <div class="grid3" style="margin-top:16px;">
-    <div class="card story no-break"><p class="eyebrow">Problema</p><h4>Fraude escondida no fluxo normal</h4>
-      <p class="muted">Fornecedor de fachada, desvio de pagamento, sobrepreço, fracionamento e fraude interna passam pelo processo de compra sem chamar atenção.</p></div>
-    <div class="card story s2 no-break"><p class="eyebrow">Solução</p><h4>Evidência no ABAP, decisão tipada</h4>
-      <p class="muted">O ABAP calcula os indicadores; o Jev devolve probabilidades por tipo de fraude; o ABAP aplica limiares e grava o log.</p></div>
-    <div class="card story s3 no-break"><p class="eyebrow">Resultado</p><h4>Funciona de ponta a ponta</h4>
-      <p class="muted">Avaliações reais gravadas no S/4 com o Jev real. No caso 4500001366 o modelo apontou fornecedor fictício com 0,87.</p></div>
+  <div class="grid3" style="margin-top:14px;">
+    <div class="story no-break"><div class="num hl">01</div><h4>Problema</h4>
+      <p>Fornecedor de fachada, desvio de pagamento, sobrepreço, fracionamento e fraude interna passam pelo processo de compra sem chamar atenção.</p></div>
+    <div class="story no-break"><div class="num hl">02</div><h4>Solução</h4>
+      <p>O ABAP calcula os indicadores; o Jev devolve probabilidades por tipo de fraude; o ABAP aplica limiares e grava o log.</p></div>
+    <div class="story no-break"><div class="num hl">03</div><h4>Resultado</h4>
+      <p>Avaliações reais gravadas no S/4 com o Jev real. No caso 4500001366 o modelo apontou fornecedor fictício com 0,87.</p></div>
   </div>
 
-  <h4 style="margin-top:22px;">Situação atual</h4>
+  <h4 class="sec">Situação atual</h4>
   <table class="no-break">
-    <tr><th style="width:28%">Frente</th><th style="width:18%">Status</th><th>Observação</th></tr>
-    <tr><td>Backend RAP e serviço OData V4</td><td><span class="tag t-green">Pronto</span></td><td>24 objetos ativos, serviço publicado e validado com dados reais</td></tr>
+    <tr><th style="width:30%">Frente</th><th style="width:20%">Status</th><th>Observação</th></tr>
+    <tr><td>Backend RAP e serviço OData V4</td><td><span class="tag t-green">Pronto</span></td><td>28 objetos ativos em 2 pacotes, serviço publicado e validado com dados reais</td></tr>
     <tr><td>App Fiori + integração Jev</td><td><span class="tag t-green">Pronto</span></td><td>Chave só no servidor, payload anônimo, falha segura testada</td></tr>
-    <tr><td>Clean core (ATC)</td><td><span class="tag t-amber">Em refatoração</span></td><td>Troca de tabelas por APIs liberadas e wrapper isolado para documentos de modificação</td></tr>
+    <tr><td>Clean core (ATC)</td><td><span class="tag t-green">Concluído</span></td><td>ATC de 37 para 0 achados no núcleo; só o wrapper isolado mantém 2 achados justificados</td></tr>
     <tr><td>Calibração dos limiares</td><td><span class="tag t-grey">Próximo passo</span></td><td>Depende da ação do aprovador para rotular os casos</td></tr>
     <tr><td>Hospedagem de produção</td><td><span class="tag t-grey">A decidir</span></td><td>SAP BTP (approuter + destination) ou deploy no S/4 com proxy SICF</td></tr>
   </table>
@@ -246,24 +265,24 @@
 <!-- ================= SUMÁRIO ================= -->
 <div class="toc">
   <p class="eyebrow">Conteúdo</p>
-  <h2 class="page-title" style="border:0;padding:0;margin-bottom:18px;">Sumário</h2>
+  <h2>Sumário</h2>
   <div class="toc-part">
     <div class="hd"><b>Funcional</b><span>Parte I</span></div>
     <ol>
-      <li><i>1</i>Objetivo e escopo</li>
-      <li><i>2</i>Fraudes cobertas</li>
-      <li><i>3</i>O que a POC avalia</li>
-      <li><i>4</i>Perguntas ao Jev</li>
-      <li><i>5</i>Como a decisão é tomada</li>
-      <li><i>6</i>A tela</li>
-      <li><i>7</i>Casos reais</li>
+      <li><i>01</i>Objetivo e escopo</li>
+      <li><i>02</i>Fraudes cobertas</li>
+      <li><i>03</i>O que a POC avalia</li>
+      <li><i>04</i>Perguntas ao Jev</li>
+      <li><i>05</i>Como a decisão é tomada</li>
+      <li><i>06</i>A tela</li>
+      <li><i>07</i>Casos reais</li>
     </ol>
   </div>
   <div class="toc-part">
     <div class="hd"><b>Técnica</b><span>Parte II</span></div>
     <ol>
-      <li><i>8</i>Arquitetura e fluxo</li>
-      <li><i>9</i>Objetos gerados no backend</li>
+      <li><i>08</i>Arquitetura e fluxo</li>
+      <li><i>09</i>Objetos gerados no backend</li>
       <li><i>10</i>Camadas CDS e indicadores</li>
       <li><i>11</i>RAP: ação registrarAvaliacao</li>
       <li><i>12</i>Tabelas Z</li>
@@ -292,7 +311,7 @@
 <!-- PARTE I — FUNCIONAL                                            -->
 <!-- ============================================================= -->
 <section>
-  <h2>Parte I — Funcional</h2>
+  <h2><small>Parte I</small><span class="hl">Funcional</span>: o que a POC avalia e decide</h2>
 
   <h3>1. Objetivo e escopo</h3>
   <p>A POC mostra os pedidos de compra do S/4HANA num app Fiori com indicadores de risco já calculados.
@@ -345,7 +364,7 @@
     <tr><td>Criador do fornecedor = criador do pedido</td><td>LFA1-ERNAM, BUT000-CRUSR, EKKO-ERNAM</td><td><span class="tag t-green">Completo</span></td></tr>
     <tr><td>Alterações de banco/endereço em 30 dias e dias desde a última</td><td>CDHDR/CDPOS (KRED, BUPA_BUP, BUPA_BANK, BUPA_ADR)</td><td><span class="tag t-amber">Simplificado</span></td></tr>
     <tr><td>Conta bancária usada por outro fornecedor (flag e quantidade)</td><td>LFBK / BUT0BK</td><td><span class="tag t-green">Completo</span></td></tr>
-    <tr><td>Nº de pedidos, valor médio e desvio padrão</td><td>EKKO/EKPO via AMDP</td><td><span class="tag t-amber">Simplificado</span></td></tr>
+    <tr><td>Nº de pedidos, valor médio e desvio padrão</td><td><code>I_PurchaseOrderAPI01</code> + cálculo em ABAP</td><td><span class="tag t-amber">Simplificado</span></td></tr>
     <tr><td rowspan="6">Pedido</td><td>Valor total, razão vs média do fornecedor e z-score</td><td>Pedido + histórico</td><td><span class="tag t-green">Completo</span></td></tr>
     <tr><td>Preço unitário vs registro info e vs histórico do material (pior item)</td><td>EKPO, EINA/EINE</td><td><span class="tag t-amber">Simplificado</span></td></tr>
     <tr><td>Quantidade vs histórico (pior item)</td><td>EKPO</td><td><span class="tag t-amber">Simplificado</span></td></tr>
@@ -354,7 +373,7 @@
     <tr><td>Pedido criado depois da fatura</td><td>RSEG/RBKP</td><td><span class="tag t-green">Completo</span></td></tr>
     <tr><td rowspan="2">Velocidade</td><td>Pedidos ao mesmo fornecedor em 24h</td><td>EKKO</td><td><span class="tag t-amber">Por data</span></td></tr>
     <tr><td>Pedidos ao mesmo fornecedor em 7 dias</td><td>EKKO</td><td><span class="tag t-green">Completo</span></td></tr>
-    <tr><td rowspan="2">Comprador</td><td>Participação do fornecedor nas compras do comprador (%)</td><td>EKKO/EKPO via AMDP</td><td><span class="tag t-green">Completo</span></td></tr>
+    <tr><td rowspan="2">Comprador</td><td>Participação do fornecedor nas compras do comprador (%)</td><td><code>I_PurchaseOrderAPI01</code></td><td><span class="tag t-green">Completo</span></td></tr>
     <tr><td>Criador do pedido também lançou a entrada de mercadoria</td><td>EKBE (VGABE = 1)</td><td><span class="tag t-green">Completo</span></td></tr>
     <tr><td rowspan="2">Fora da POC</td><td>Distância do valor até a alçada de aprovação</td><td>Estratégia de liberação</td><td><span class="tag t-grey">Roadmap</span></td></tr>
     <tr><td>Idade e situação do CNPJ, CNAE, listas restritivas</td><td>Fonte externa</td><td><span class="tag t-grey">Fora</span></td></tr>
@@ -490,7 +509,7 @@
 <!-- PARTE II — TÉCNICA                                             -->
 <!-- ============================================================= -->
 <section>
-  <h2>Parte II — Técnica</h2>
+  <h2><small>Parte II</small><span class="hl">Técnica</span>: arquitetura, objetos e integração</h2>
 
   <h3>8. Arquitetura e fluxo</h3>
   <p>A chamada ao Jev sai do front, não do ABAP, passando por uma rota do próprio app que injeta a chave no
@@ -507,57 +526,70 @@
   </ol>
 
   <h3>9. Objetos gerados no backend</h3>
-  <p>24 objetos no pacote <code>ZPOC_JEV</code>, transporte <code>S4HK913463</code>, todos ativos. Sem domínios ou
+  <p>28 objetos em dois pacotes, transporte <code>S4HK913463</code>, todos ativos. O núcleo fica em <code>ZPOC_JEV</code> e usa
+  só APIs liberadas; o único acesso a fonte não liberada fica isolado no subpacote <code>ZPOC_JEV_WRAP</code>. Sem domínios ou
   elementos de dados próprios (tipos built-in).</p>
   <table>
     <tr><th>#</th><th>Objeto</th><th>Tipo</th><th>Papel</th></tr>
     <tr><td>1</td><td><code>ZPOC_JEV_AVAL</code></td><td>TABL</td><td>Log das avaliações: snapshot dos indicadores, resposta do Jev, classificação, limiares usados, modo sombra, campos de decisão (fase 2)</td></tr>
     <tr><td>2</td><td><code>ZPOC_JEV_CFG</code></td><td>TABL</td><td>Limiares e parâmetros</td></tr>
-    <tr><td>3</td><td><code>ZI_POC_JEV_PEDIDOITEM</code></td><td>DDLS</td><td>Base EKKO + EKPO no escopo, preço unitário normalizado</td></tr>
+    <tr><td>3</td><td><code>ZI_POC_JEV_PEDIDOITEM</code></td><td>DDLS</td><td>Base do pedido e itens no escopo, sobre <code>I_PurchaseOrderAPI01</code> e <code>I_PurchaseOrderItemAPI01</code></td></tr>
     <tr><td>4</td><td><code>ZI_POC_JEV_ITEMIND</code></td><td>DDLS</td><td>Indicadores por item: preço vs registro info e histórico, quantidade, material novo</td></tr>
-    <tr><td>5</td><td><code>ZTF_POC_JEV_HIST</code></td><td>DDLS (table function)</td><td>Estatísticas históricas, velocidade e participação do comprador</td></tr>
-    <tr><td>6</td><td><code>ZCL_POC_JEV_HIST_AMDP</code></td><td>CLAS (AMDP)</td><td>Implementação HANA da table function (desvio padrão, janelas)</td></tr>
-    <tr><td>7</td><td><code>ZI_POC_JEV_FORNIND</code></td><td>DDLS</td><td>Idade e criador do fornecedor, conta compartilhada, regra dura, condição de pagamento</td></tr>
-    <tr><td>8</td><td><code>ZI_POC_JEV_ALTCAD</code></td><td>DDLS</td><td>Alterações de banco/endereço em 30 dias</td></tr>
-    <tr><td>9</td><td><code>ZI_POC_JEV_FLUXODOC</code></td><td>DDLS</td><td>Fatura anterior ao pedido, criador lançou EM, pior item por pedido</td></tr>
-    <tr><td>10</td><td><code>ZR_POC_JEV_PEDIDO</code></td><td>DDLS (root)</td><td>Raiz: 1 linha por pedido, semáforos, regra dura, última avaliação, nome do fornecedor</td></tr>
-    <tr><td>11</td><td><code>ZR_POC_JEV_AVAL</code></td><td>DDLS</td><td>Filha: avaliações do pedido (composição)</td></tr>
-    <tr><td>12</td><td><code>ZA_POC_JEV_AVAL_IN</code></td><td>DDLS (abstract)</td><td>Parâmetro da ação</td></tr>
-    <tr><td>13</td><td><code>ZR_POC_JEV_PEDIDO</code></td><td>BDEF</td><td>Unmanaged, strict(2), ação <code>registrarAvaliacao</code></td></tr>
-    <tr><td>14</td><td><code>ZBP_R_POC_JEV_PEDIDO</code></td><td>CLAS</td><td>Behavior pool: read, lock, ação, limiares, save</td></tr>
-    <tr><td>15</td><td><code>ZC_POC_JEV_PEDIDO</code></td><td>DDLS (projection)</td><td>Consumo: List Report / Object Page</td></tr>
-    <tr><td>16</td><td><code>ZC_POC_JEV_AVAL</code></td><td>DDLS (projection)</td><td>Tabela de avaliações</td></tr>
-    <tr><td>17</td><td><code>ZC_POC_JEV_ITEM</code></td><td>DDLS</td><td>Tabela de itens com indicadores</td></tr>
-    <tr><td>18</td><td><code>ZC_POC_JEV_PEDIDO</code></td><td>BDEF (projection)</td><td>Expõe a ação</td></tr>
-    <tr><td>19–21</td><td><code>ZC_POC_JEV_PEDIDO</code>, <code>_AVAL</code>, <code>_ITEM</code></td><td>DDLX</td><td>Anotações de UI: facets, colunas, semáforos, value helps, texto do fornecedor</td></tr>
-    <tr><td>22</td><td><code>ZUI_POC_JEV</code></td><td>SRVD</td><td>Expõe Pedido, Avaliacao, Item e value helps</td></tr>
-    <tr><td>23</td><td><code>ZUI_POC_JEV_O4</code></td><td>SRVB</td><td>OData V4 · UI, publicado</td></tr>
-    <tr><td>24</td><td><code>ZCL_POC_JEV_SETUP</code></td><td>CLAS (classrun)</td><td>Carga inicial da <code>ZPOC_JEV_CFG</code> (rodar com F9)</td></tr>
+    <tr><td>5</td><td><code>ZI_POC_JEV_PEDIDOVALOR</code></td><td>DDLS</td><td>Uma linha por pedido: fornecedor, criador, data, moeda, valor total, datas-limite das janelas</td></tr>
+    <tr><td>6</td><td><code>ZI_POC_JEV_HISTFORN</code></td><td>DDLS</td><td>Histórico do fornecedor: quantidade, soma e soma dos quadrados (24 meses), pedidos em 24h e 7 dias</td></tr>
+    <tr><td>7</td><td><code>ZI_POC_JEV_COMPRADOR</code></td><td>DDLS</td><td>Valor comprado pelo comprador no total e com o fornecedor (12 meses)</td></tr>
+    <tr><td>8</td><td><code>ZI_POC_JEV_FORNIND</code></td><td>DDLS</td><td>Idade e criador do fornecedor, conta compartilhada (BP), regra dura, condição de pagamento</td></tr>
+    <tr><td>9</td><td><code>ZI_POC_JEV_ALTCAD</code></td><td>DDLS</td><td>Alterações de banco/endereço em 30 dias, lidas pelo wrapper</td></tr>
+    <tr><td>10</td><td><code>ZI_POC_JEV_FLUXODOC</code></td><td>DDLS</td><td>Fatura anterior ao pedido, criador lançou a entrada (sem estornos), pior item por pedido</td></tr>
+    <tr><td>11</td><td><code>ZI_POC_JEV_ULTAVAL</code></td><td>DDLS</td><td>Última avaliação e quantidade de avaliações por pedido</td></tr>
+    <tr><td>12</td><td><code>ZCL_POC_JEV_STATS</code></td><td>CLAS</td><td>Desvio padrão e z-score como campo calculado (CDS não tem raiz quadrada)</td></tr>
+    <tr><td>13</td><td><code>ZR_POC_JEV_PEDIDO</code></td><td>DDLS (root)</td><td>Raiz: 1 linha por pedido, semáforos, regra dura, última avaliação, nome do fornecedor</td></tr>
+    <tr><td>14</td><td><code>ZR_POC_JEV_AVAL</code></td><td>DDLS</td><td>Filha: avaliações do pedido (composição)</td></tr>
+    <tr><td>15</td><td><code>ZA_POC_JEV_AVAL_IN</code></td><td>DDLS (abstract)</td><td>Parâmetro da ação</td></tr>
+    <tr><td>16</td><td><code>ZR_POC_JEV_PEDIDO</code></td><td>BDEF</td><td>Unmanaged, strict(2), ação <code>registrarAvaliacao</code></td></tr>
+    <tr><td>17</td><td><code>ZBP_R_POC_JEV_PEDIDO</code></td><td>CLAS</td><td>Behavior pool: read, lock, ação, limiares, save</td></tr>
+    <tr><td>18</td><td><code>ZC_POC_JEV_PEDIDO</code></td><td>DDLS (projection)</td><td>Consumo: List Report / Object Page</td></tr>
+    <tr><td>19</td><td><code>ZC_POC_JEV_AVAL</code></td><td>DDLS (projection)</td><td>Tabela de avaliações</td></tr>
+    <tr><td>20</td><td><code>ZC_POC_JEV_ITEM</code></td><td>DDLS</td><td>Tabela de itens com indicadores</td></tr>
+    <tr><td>21</td><td><code>ZC_POC_JEV_PEDIDO</code></td><td>BDEF (projection)</td><td>Expõe a ação</td></tr>
+    <tr><td>22–24</td><td><code>ZC_POC_JEV_PEDIDO</code>, <code>_AVAL</code>, <code>_ITEM</code></td><td>DDLX</td><td>Anotações de UI: facets, colunas, semáforos, value helps, texto do fornecedor</td></tr>
+    <tr><td>25</td><td><code>ZUI_POC_JEV</code></td><td>SRVD</td><td>Expõe Pedido, Avaliacao, Item e value helps</td></tr>
+    <tr><td>26</td><td><code>ZUI_POC_JEV_O4</code></td><td>SRVB</td><td>OData V4 · UI, publicado</td></tr>
+    <tr><td>27</td><td><code>ZCL_POC_JEV_SETUP</code></td><td>CLAS (classrun)</td><td>Carga inicial da <code>ZPOC_JEV_CFG</code> (rodar com F9)</td></tr>
+    <tr><td>28</td><td><code>ZI_POC_JEV_W_CHGDOC</code></td><td>DDLS · <code>ZPOC_JEV_WRAP</code></td><td>Wrapper liberado (C1) sobre os documentos de modificação; expõe só objeto, documento, data e tabela</td></tr>
   </table>
 </section>
 
 <section>
   <h3>10. Camadas CDS e cálculo dos indicadores</h3>
-<pre><code>CDS standard (reuso): I_PurchaseOrderAPI01 · I_PurchaseOrderItemAPI01 · I_Supplier
-                      I_SupplierPurchasingOrg · I_SupplierBankDetails · I_ChangeDocument(Item)
-                      I_PurgInfoRecdOrgPlntDataApi01 · I_SupplierInvoiceAPI01 · EKBE
+<pre><code>APIs liberadas (C1): I_PurchaseOrderAPI01 · I_PurchaseOrderItemAPI01 · I_Supplier
+                     I_SupplierPurchasingOrg · I_SupplierCompany · I_SupplierToBusinessPartner
+                     I_BusinessPartnerBank · I_PurgInfoRecdOrgPlntDataApi01
+                     I_SupplierInvoiceAPI01 · I_SuplrInvcItemPurOrdRefAPI01 · I_MaterialDocument*_2
   │
-  ├─ ZI_POC_JEV_PEDIDOITEM         base EKKO+EKPO no escopo
+  ├─ ZPOC_JEV_WRAP / ZI_POC_JEV_W_CHGDOC   wrapper liberado sobre I_ChangeDocument(Item)
+  │
+  ├─ ZI_POC_JEV_PEDIDOITEM         base pedido + itens no escopo
   │   └─ ZI_POC_JEV_ITEMIND        indicadores por item
-  ├─ ZTF_POC_JEV_HIST (AMDP)       média, desvio, z-score, 24h/7d, participação do comprador
+  ├─ ZI_POC_JEV_PEDIDOVALOR        valor e janelas por pedido
+  │   ├─ ZI_POC_JEV_HISTFORN       n, Σ, Σ² do fornecedor · 24h / 7d
+  │   └─ ZI_POC_JEV_COMPRADOR      participação do fornecedor no comprador
   ├─ ZI_POC_JEV_FORNIND            fornecedor + regra dura
-  ├─ ZI_POC_JEV_ALTCAD             alterações cadastrais 30d
+  ├─ ZI_POC_JEV_ALTCAD             alterações cadastrais 30d (via wrapper)
   ├─ ZI_POC_JEV_FLUXODOC           fatura antes do pedido, criador lançou EM, pior item
+  ├─ ZI_POC_JEV_ULTAVAL            última avaliação
   │
   ├─ ZR_POC_JEV_PEDIDO (root) ──composition── ZR_POC_JEV_AVAL
+  │      └─ ZCL_POC_JEV_STATS      desvio padrão e z-score (campo calculado)
   ├─ ZC_POC_JEV_PEDIDO / ZC_POC_JEV_AVAL / ZC_POC_JEV_ITEM  (+ DDLX)
   └─ ZUI_POC_JEV (SRVD) → ZUI_POC_JEV_O4 (SRVB, OData V4 UI)</code></pre>
 
   <h4>Decisões de modelagem</h4>
   <ul>
+    <li><b>Só APIs liberadas no núcleo:</b> todas as views Z leem views <code>I_*</code> liberadas (C1) ou outros objetos Z. O que não tem API liberada, os documentos de modificação, entra por um wrapper isolado em subpacote próprio e marcado como liberado.</li>
     <li><b>Sem vazamento do futuro:</b> o histórico considera só pedidos criados <b>antes</b> do pedido avaliado.</li>
-    <li><b>Table function com AMDP:</b> CDS não tem desvio padrão nem raiz quadrada; a AMDP usa as funções do HANA.</li>
-    <li><b>Pior item:</b> o cálculo saiu da AMDP para <code>ZI_POC_JEV_FLUXODOC</code>, porque a AMDP não conseguiu ler a view de itens (restrição de mandante).</li>
+    <li><b>Desvio padrão em ABAP:</b> o CDS soma n, Σ e Σ²; a raiz quadrada sai em <code>ZCL_POC_JEV_STATS</code>, como campo calculado. Por isso desvio e z-score aparecem na tela, mas não servem de filtro nem de ordenação.</li>
+    <li><b>Mesmos números da versão anterior:</b> média, razões e percentuais são truncados nas mesmas casas da implementação original (a antiga AMDP truncava e o CDS arredondaria).</li>
     <li><b>Semáforos</b> como inteiros na raiz (1 vermelho, 2 amarelo, 3 verde, 0 neutro): idade do fornecedor (&lt;90 d vermelho, &lt;365 d amarelo), alterações cadastrais, conta compartilhada, preço (&gt;1,20 vermelho, &gt;1,05 amarelo), regra e classificação.</li>
   </ul>
 
@@ -650,7 +682,7 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
 <!-- PARTE III — CUSTO, RESULTADOS, PRÓXIMOS PASSOS                 -->
 <!-- ============================================================= -->
 <section>
-  <h2>Parte III — Custo, resultados e próximos passos</h2>
+  <h2><small>Parte III</small>Custo, resultados e <span class="hl">próximos passos</span></h2>
 
   <h3>15. Custo</h3>
   <p>O Jev cobra só os tokens de entrada; a saída é gratuita. Cada resposta traz o custo real em
@@ -676,7 +708,7 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
   <h4>Outros custos</h4>
   <ul>
     <li><b>Latência:</b> a TypeSafe cita cerca de 100 ms por consulta; o simulador local respondeu em 168 ms. O front desiste em 1,5 s.</li>
-    <li><b>SAP:</b> sem licença ou infraestrutura adicional. Os objetos usam CDS, RAP e AMDP do próprio S/4.</li>
+    <li><b>SAP:</b> sem licença ou infraestrutura adicional. Os objetos usam CDS, RAP e ABAP do próprio S/4, só com APIs liberadas.</li>
     <li><b>Performance do backend:</b> a primeira leitura da lista levou cerca de 4,5 s com ~1.400 pedidos. Em produção, as views de histórico precisam de janelas menores ou materialização.</li>
   </ul>
 
@@ -692,7 +724,7 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
     <tr><td>Qualidade do app</td><td>Linter UI5 sem achados; manifest válido contra o schema oficial</td></tr>
   </table>
 
-  <h3>17. Limitações e riscos</h3>
+  <h3>17. Limitações, riscos e clean core</h3>
   <ul>
     <li><b>Limiares não calibrados:</b> 0,20 e 0,60 são hipótese. A classe de setup ainda não foi executada; vale a reserva no código.</li>
     <li><b>Dados de teste:</b> o sistema tem poucos pedidos e padrões típicos de teste, o que gera falsos positivos (caso 4500001366).</li>
@@ -705,21 +737,30 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
   </ul>
 
   <h4>Clean core (ATC)</h4>
-  <p>ATC com a variante <code>ABAP_CLOUD_READINESS</code> em 07/10/2026, sobre os 24 objetos: <b>37 achados de
-  prioridade 1</b>, todos da checagem "Usage of Released APIs". 17 objetos passaram limpos: tabelas, BDEFs, projeções,
-  DDLX, serviço, behavior pool e classe de setup.</p>
+  <p>ATC com a variante <code>ABAP_CLOUD_READINESS</code>, a da SAP para prontidão ABAP Cloud, rodado antes e depois da refatoração
+  de 07/10/2026.</p>
+  <div class="grid3">
+    <div class="card no-break"><p class="eyebrow">Antes</p><div class="kpi">37</div><div class="kpi-l">achados de prioridade 1 em 7 dos 24 objetos</div></div>
+    <div class="card no-break"><p class="eyebrow">Depois · núcleo</p><div class="kpi"><span class="hl">0</span></div><div class="kpi-l">achados nos 27 objetos de <code>ZPOC_JEV</code></div></div>
+    <div class="card no-break"><p class="eyebrow">Depois · wrapper</p><div class="kpi">2</div><div class="kpi-l">achados esperados em <code>ZI_POC_JEV_W_CHGDOC</code></div></div>
+  </div>
   <table class="no-break">
-    <tr><th>Objeto</th><th class="num">Achados</th><th>Lê diretamente</th></tr>
-    <tr><td><code>ZI_POC_JEV_FORNIND</code></td><td class="num">14</td><td>EKKO, LFA1, LFM1, LFB1, CVI_VEND_LINK, BUT000, LFBK, BUT0BK</td></tr>
-    <tr><td><code>ZI_POC_JEV_PEDIDOITEM</code></td><td class="num">9</td><td>EKKO, EKPO, LFA1, CVI_VEND_LINK, BUT000</td></tr>
-    <tr><td><code>ZI_POC_JEV_FLUXODOC</code></td><td class="num">7</td><td>EKKO, EKBE, RSEG, RBKP</td></tr>
-    <tr><td><code>ZI_POC_JEV_ALTCAD</code></td><td class="num">2</td><td>CDHDR, CDPOS</td></tr>
-    <tr><td><code>ZR_POC_JEV_PEDIDO</code></td><td class="num">2</td><td>EKKO</td></tr>
-    <tr><td><code>ZCL_POC_JEV_HIST_AMDP</code></td><td class="num">2</td><td>EKKO, EKPO (SQLScript)</td></tr>
-    <tr><td><code>ZI_POC_JEV_ITEMIND</code></td><td class="num">1</td><td>EINE</td></tr>
+    <tr><th>Objeto (antes)</th><th class="num">Achados</th><th>Lia diretamente</th><th>Agora</th></tr>
+    <tr><td><code>ZI_POC_JEV_FORNIND</code></td><td class="num">14</td><td>EKKO, LFA1, LFM1, LFB1, CVI_VEND_LINK, BUT000, LFBK, BUT0BK</td><td><code>I_Supplier*</code>, <code>I_BusinessPartnerBank</code></td></tr>
+    <tr><td><code>ZI_POC_JEV_PEDIDOITEM</code></td><td class="num">9</td><td>EKKO, EKPO, LFA1, CVI_VEND_LINK, BUT000</td><td><code>I_PurchaseOrder(Item)API01</code></td></tr>
+    <tr><td><code>ZI_POC_JEV_FLUXODOC</code></td><td class="num">7</td><td>EKKO, EKBE, RSEG, RBKP</td><td><code>I_SupplierInvoiceAPI01</code>, <code>I_MaterialDocument*_2</code></td></tr>
+    <tr><td><code>ZI_POC_JEV_ALTCAD</code></td><td class="num">2</td><td>CDHDR, CDPOS</td><td>Wrapper <code>ZI_POC_JEV_W_CHGDOC</code></td></tr>
+    <tr><td><code>ZR_POC_JEV_PEDIDO</code></td><td class="num">2</td><td>EKKO</td><td>Views Z do núcleo</td></tr>
+    <tr><td><code>ZCL_POC_JEV_HIST_AMDP</code></td><td class="num">2</td><td>EKKO, EKPO (SQLScript)</td><td>Removida: CDS + <code>ZCL_POC_JEV_STATS</code></td></tr>
+    <tr><td><code>ZI_POC_JEV_ITEMIND</code></td><td class="num">1</td><td>EINE</td><td><code>I_PurgInfoRecdOrgPlntDataApi01</code></td></tr>
   </table>
-  <p>A causa é única: as views de indicadores e a AMDP leem tabelas do S/4 em vez das views liberadas
-  (<code>I_*</code>) previstas na gap analysis. O desenho RAP, o serviço e a camada de consumo já estão no padrão.</p>
+  <p><b>O que ficou:</b> os 2 achados do wrapper vêm de <code>I_ChangeDocument</code> e <code>I_ChangeDocumentItem</code>, que a SAP não
+  libera. Ficam isolados num único objeto, em subpacote próprio; se o ATC for critério de liberação, registra-se exceção só para ele.</p>
+  <p><b>Regressão:</b> os indicadores dos pedidos 4500001403, 4500001649, 4500001366 e 4500001545 ficaram idênticos campo a campo; desvio
+  padrão e z-score conferidos em 4500001410 e 4500001426 contra a implementação antiga; os 288 pedidos e as contagens de conta
+  compartilhada (4), pedido após fatura (5) e criador com entrada (49) não mudaram. O contrato do serviço com o app também não mudou.</p>
+  <p><b>Semântica ajustada (aprovada):</b> conta compartilhada passa a vir só do cadastro do BP e o recebimento ignora estornos.
+  Nos dados atuais nenhum valor mudou.</p>
 </section>
 
 <section>
@@ -734,17 +775,19 @@ Authorization: Bearer &lt;OPENROUTER_API_KEY&gt;      (injetado no servidor)
     <tr><td>4</td><td>Corrigir os value helps de Empresa e Org. compras</td><td>Ajuste pequeno no DDLX</td></tr>
     <tr><td>5</td><td>Excluir usuários técnicos dos flags de criador</td><td>Reduz falso positivo em fornecedor fictício e fraude interna</td></tr>
     <tr><td>6</td><td>Gravar e exibir todas as chaves acima do limiar</td><td>Hoje só a maior vai para o aprovador; no 4500001545 duas chaves passaram de 0,60</td></tr>
+    <tr><td>7</td><td>Retestar <code>registrarAvaliacao</code> depois da refatoração</td><td>A leitura foi validada; falta uma gravação pelo app para conferir o z-score no log</td></tr>
   </table>
 
   <h4>Para produção</h4>
   <table class="no-break">
     <tr><th>#</th><th>Melhoria</th><th>Por quê</th></tr>
-    <tr><td>7</td><td>Hospedagem e rota do Jev</td><td>Escolher BTP (approuter + destino) ou S/4 (SICF / proxy reverso) para guardar a chave fora do ambiente local</td></tr>
-    <tr><td>8</td><td>Versão SAPUI5 compatível</td><td>Alinhar app (1.136) e servidor (1.114)</td></tr>
-    <tr><td>9</td><td>Clean core e autorização: trocar as tabelas pelas views <code>I_*</code> liberadas e ativar DCL nas views Z</td><td>Zera os 37 achados do ATC e cada usuário passa a ver só os pedidos da sua organização</td></tr>
-    <tr><td>10</td><td>Integridade do resultado</td><td>Chamada do Jev pelo servidor, ou assinatura da resposta, para o ABAP não depender do que o navegador envia</td></tr>
-    <tr><td>11</td><td>Retry com espera para HTTP 429 na avaliação em lote</td><td>Hoje o limite de chamadas vira INDISPONIVEL</td></tr>
-    <tr><td>12</td><td>Performance das views de histórico</td><td>Janelas menores ou materialização para volumes reais</td></tr>
+    <tr><td>8</td><td>Hospedagem e rota do Jev</td><td>Escolher BTP (approuter + destino) ou S/4 (SICF / proxy reverso) para guardar a chave fora do ambiente local</td></tr>
+    <tr><td>9</td><td>Versão SAPUI5 compatível</td><td>Alinhar app (1.136) e servidor (1.114)</td></tr>
+    <tr><td>10</td><td>Autorização (DCL) nas views Z</td><td>Cada usuário passa a ver só os pedidos da sua organização</td></tr>
+    <tr><td>11</td><td>Exceção de ATC para o wrapper e versão de linguagem ABAP for Cloud no núcleo</td><td>Formaliza o desvio isolado e trava novas leituras não liberadas no compilador</td></tr>
+    <tr><td>12</td><td>Integridade do resultado</td><td>Chamada do Jev pelo servidor, ou assinatura da resposta, para o ABAP não depender do que o navegador envia</td></tr>
+    <tr><td>13</td><td>Retry com espera para HTTP 429 na avaliação em lote</td><td>Hoje o limite de chamadas vira INDISPONIVEL</td></tr>
+    <tr><td>14</td><td>Performance das views de histórico</td><td>Janelas menores ou materialização para volumes reais</td></tr>
   </table>
 
   <h4>Novos indicadores</h4>

@@ -8,14 +8,16 @@ define view entity ZI_POC_JEV_ITEMIND
                                                   and hist.OrderPriceUnit   =  cur.OrderPriceUnit
                                                   and hist.CreationDate     <  cur.CreationDate
                                                   and hist.CreationDate     >= cur.Date24MonthsBefore
-    left outer to one join eine as ri             on  ri.infnr = cur.PurchasingInfoRecord
-                                                  and ri.ekorg = cur.PurchasingOrganization
-                                                  and ri.esokz = '0'
-                                                  and ri.werks = cur.Plant
-    left outer to one join eine as rig            on  rig.infnr = cur.PurchasingInfoRecord
-                                                  and rig.ekorg = cur.PurchasingOrganization
-                                                  and rig.esokz = '0'
-                                                  and rig.werks = ''
+    left outer to one join I_PurgInfoRecdOrgPlntDataApi01 as ri
+                                                  on  ri.PurchasingInfoRecord         = cur.PurchasingInfoRecord
+                                                  and ri.PurchasingOrganization       = cur.PurchasingOrganization
+                                                  and ri.PurchasingInfoRecordCategory = '0'
+                                                  and ri.Plant                        = cur.Plant
+    left outer to one join I_PurgInfoRecdOrgPlntDataApi01 as rig
+                                                  on  rig.PurchasingInfoRecord         = cur.PurchasingInfoRecord
+                                                  and rig.PurchasingOrganization       = cur.PurchasingOrganization
+                                                  and rig.PurchasingInfoRecordCategory = '0'
+                                                  and rig.Plant                        = ''
 {
   key cur.PurchaseOrder,
   key cur.PurchaseOrderItem,
@@ -32,12 +34,18 @@ define view entity ZI_POC_JEV_ITEMIND
       cur.UnitPrice,
 
       case
-        when ri.infnr is not null and ri.loekz = '' and ri.waers = cur.DocumentCurrency
-         and ri.bprme = cur.OrderPriceUnit and ri.peinh > 0 and ri.netpr > 0
-          then division( cast( ri.netpr as abap.dec(11,2) ), ri.peinh, 4 )
-        when rig.infnr is not null and rig.loekz = '' and rig.waers = cur.DocumentCurrency
-         and rig.bprme = cur.OrderPriceUnit and rig.peinh > 0 and rig.netpr > 0
-          then division( cast( rig.netpr as abap.dec(11,2) ), rig.peinh, 4 )
+        when ri.PurchasingInfoRecord is not null and ri.IsMarkedForDeletion = ''
+         and ri.Currency = cur.DocumentCurrency and ri.PurchaseOrderPriceUnit = cur.OrderPriceUnit
+         and cast( ri.MaterialPriceUnitQty as abap.dec(13,3) ) > 0
+         and cast( ri.NetPriceAmount as abap.dec(11,2) ) > 0
+          then cast( division( cast( ri.NetPriceAmount as abap.dec(11,2) ),
+                               cast( ri.MaterialPriceUnitQty as abap.dec(13,3) ), 4 ) as abap.dec(15,4) )
+        when rig.PurchasingInfoRecord is not null and rig.IsMarkedForDeletion = ''
+         and rig.Currency = cur.DocumentCurrency and rig.PurchaseOrderPriceUnit = cur.OrderPriceUnit
+         and cast( rig.MaterialPriceUnitQty as abap.dec(13,3) ) > 0
+         and cast( rig.NetPriceAmount as abap.dec(11,2) ) > 0
+          then cast( division( cast( rig.NetPriceAmount as abap.dec(11,2) ),
+                               cast( rig.MaterialPriceUnitQty as abap.dec(13,3) ), 4 ) as abap.dec(15,4) )
         else cast( 0 as abap.dec(15,4) )
       end                                                                     as InfoRecordUnitPrice,
 
@@ -61,15 +69,15 @@ group by
   cur.OrderQuantity,
   cur.NetAmount,
   cur.UnitPrice,
-  ri.infnr,
-  ri.loekz,
-  ri.waers,
-  ri.bprme,
-  ri.peinh,
-  ri.netpr,
-  rig.infnr,
-  rig.loekz,
-  rig.waers,
-  rig.bprme,
-  rig.peinh,
-  rig.netpr
+  ri.PurchasingInfoRecord,
+  ri.IsMarkedForDeletion,
+  ri.Currency,
+  ri.PurchaseOrderPriceUnit,
+  ri.MaterialPriceUnitQty,
+  ri.NetPriceAmount,
+  rig.PurchasingInfoRecord,
+  rig.IsMarkedForDeletion,
+  rig.Currency,
+  rig.PurchaseOrderPriceUnit,
+  rig.MaterialPriceUnitQty,
+  rig.NetPriceAmount

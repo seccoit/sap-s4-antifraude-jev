@@ -29,9 +29,13 @@ define root view entity ZC_POC_JEV_PEDIDO
       SharedBankAccount,
       SuplrHistPOCount,
       SuplrHistAvgAmount,
-      SuplrHistStdDevAmount,
+      SuplrHistSumAmount,
+      SuplrHistSumSqAmount,
+      @ObjectModel.virtualElementCalculatedBy: 'ABAP:ZCL_POC_JEV_STATS'
+      virtual SuplrHistStdDevAmount : abap.dec(15,2),
       AmountToSuplrAvgRatio,
-      AmountZScore,
+      @ObjectModel.virtualElementCalculatedBy: 'ABAP:ZCL_POC_JEV_STATS'
+      virtual AmountZScore : abap.dec(11,4),
       MaxPriceToMaterialAvgRatio,
       MaxPriceToInfoRecordRatio,
       MaxQtyToHistRatio,

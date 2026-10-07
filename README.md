@@ -30,13 +30,14 @@ limiares são hipótese a calibrar.
 ## Estrutura
 
 ```
-abap/        fonte dos 24 objetos do pacote ZPOC_JEV (exportados do sistema)
+abap/        fonte dos 28 objetos (pacote ZPOC_JEV + subpacote ZPOC_JEV_WRAP), exportados do sistema
   tables/    ZPOC_JEV_AVAL (log) e ZPOC_JEV_CFG (limiares)
-  cds/       views de indicadores, raiz RAP, projeções e table function
+  cds/       views de indicadores (só APIs liberadas), raiz RAP e projeções
   behavior/  BDEF unmanaged e de projeção (ação registrarAvaliacao)
   metadata/  anotações de UI (DDLX)
   service/   service definition e descrição do binding OData V4
-  classes/   AMDP do histórico, behavior pool e classe de setup
+  classes/   behavior pool, desvio padrão/z-score (ZCL_POC_JEV_STATS) e classe de setup
+  wrap/      wrapper liberado sobre os documentos de modificação (único acesso não liberado)
 app/         app Fiori Elements V4 (List Report + Object Page) com o cliente do Jev
 docs/        documentação completa (HTML/PDF) e diagrama de arquitetura (.drawio/.png)
 gap-analysis.md      análise de lacunas e desenho aprovado do backend
@@ -53,10 +54,15 @@ system-info.md       capacidades do sistema usado na POC
 
 ## Como instalar
 
-**Backend.** Crie o pacote `ZPOC_JEV` e os objetos de `abap/` na ordem das camadas: tabelas →
-table function e AMDP → CDS de indicadores → raiz e filha → BDEF e behavior pool → projeções →
-DDLX → service definition → service binding (OData V4 UI, publicar). Depois rode
-`ZCL_POC_JEV_SETUP` (F9 no ADT) para gravar os limiares.
+**Backend.** Crie o pacote `ZPOC_JEV` com o subpacote `ZPOC_JEV_WRAP` e os objetos de `abap/` na
+ordem das camadas: tabelas → wrapper (marcar como API liberada C1) → CDS de indicadores e
+`ZCL_POC_JEV_STATS` → raiz e filha → BDEF e behavior pool → projeções → DDLX → service definition →
+service binding (OData V4 UI, publicar). Depois rode `ZCL_POC_JEV_SETUP` (F9 no ADT) para gravar os
+limiares.
+
+**Clean core.** O ATC com a variante `ABAP_CLOUD_READINESS` dá 0 achados no núcleo. Os únicos 2
+achados ficam no wrapper `ZI_POC_JEV_W_CHGDOC`, que lê os documentos de modificação, para os quais
+a SAP não oferece API liberada. Detalhes em [clean-core-analysis.md](clean-core-analysis.md).
 
 **Frontend.**
 

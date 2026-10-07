@@ -145,7 +145,10 @@ CLASS lhc_pedido IMPLEMENTATION.
         snap_alter_cad_30d       = ls_ped-MasterDataChanges30d
         snap_conta_compart       = ls_ped-SharedBankOtherCount
         snap_razao_valor_media   = ls_ped-AmountToSuplrAvgRatio
-        snap_zscore_valor        = ls_ped-AmountZScore
+        snap_zscore_valor        = zcl_poc_jev_stats=>zscore( iv_value = ls_ped-POTotalAmount
+                                                              iv_n     = ls_ped-SuplrHistPOCount
+                                                              iv_sum   = ls_ped-SuplrHistSumAmount
+                                                              iv_sumsq = ls_ped-SuplrHistSumSqAmount )
         snap_razao_preco_ri      = ls_ped-MaxPriceToInfoRecordRatio
         snap_razao_preco_hist    = ls_ped-MaxPriceToMaterialAvgRatio
         snap_razao_qtd_hist      = ls_ped-MaxQtyToHistRatio

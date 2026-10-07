@@ -1,71 +1,65 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'POC Jev - indicadores fornecedor'
 @Metadata.ignorePropagatedAnnotations: true
+/* Conta compartilhada: outros BPs com o mesmo pais/banco/conta (I_BusinessPartnerBank).
+   Em S/4 a LFBK e sincronizada a partir da BUT0BK (CVI). */
 define view entity ZI_POC_JEV_FORNIND
-  as select from    ekko
-    inner join      lfa1                         on  lfa1.lifnr = ekko.lifnr
-    left outer to one join lfm1                  on  lfm1.lifnr = ekko.lifnr
-                                                 and lfm1.ekorg = ekko.ekorg
-    left outer to one join lfb1                  on  lfb1.lifnr = ekko.lifnr
-                                                 and lfb1.bukrs = ekko.bukrs
-    left outer to one join cvi_vend_link as cvi  on  cvi.vendor = ekko.lifnr
-    left outer to one join but000                on  but000.partner_guid = cvi.partner_guid
-    left outer join lfbk as bk                   on  bk.lifnr = ekko.lifnr
-    left outer join lfbk as obk                  on  obk.banks =  bk.banks
-                                                 and obk.bankl =  bk.bankl
-                                                 and obk.bankn =  bk.bankn
-                                                 and obk.lifnr <> bk.lifnr
-    left outer join but0bk as bpbk               on  bpbk.partner = but000.partner
-    left outer join but0bk as obpbk              on  obpbk.banks   =  bpbk.banks
-                                                 and obpbk.bankl   =  bpbk.bankl
-                                                 and obpbk.bankn   =  bpbk.bankn
-                                                 and obpbk.partner <> bpbk.partner
+  as select from         I_PurchaseOrderAPI01        as po
+    inner join           I_Supplier                  as sup   on  sup.Supplier = po.Supplier
+    left outer to one join I_SupplierPurchasingOrg   as spo   on  spo.Supplier               = po.Supplier
+                                                              and spo.PurchasingOrganization = po.PurchasingOrganization
+    left outer to one join I_SupplierCompany         as sco   on  sco.Supplier    = po.Supplier
+                                                              and sco.CompanyCode = po.CompanyCode
+    left outer to one join I_SupplierToBusinessPartner as s2bp on s2bp.Supplier = po.Supplier
+    left outer to one join I_BusinessPartner         as bp    on  bp.BusinessPartnerUUID = s2bp.BusinessPartnerUUID
+    left outer join      I_BusinessPartnerBank       as bpbk  on  bpbk.BusinessPartner = bp.BusinessPartner
+    left outer join      I_BusinessPartnerBank       as obpbk on  obpbk.BankCountryKey  =  bpbk.BankCountryKey
+                                                              and obpbk.BankNumber      =  bpbk.BankNumber
+                                                              and obpbk.BankAccount     =  bpbk.BankAccount
+                                                              and obpbk.BusinessPartner <> bpbk.BusinessPartner
 {
-  key ekko.ebeln                                                  as PurchaseOrder,
-      ekko.lifnr                                                  as Supplier,
-      lfa1.erdat                                                  as SupplierCreationDate,
-      dats_days_between( lfa1.erdat, ekko.aedat )                 as SupplierAgeDays,
+  key po.PurchaseOrder                                            as PurchaseOrder,
+      po.Supplier                                                 as Supplier,
+      sup.CreationDate                                            as SupplierCreationDate,
+      dats_days_between( sup.CreationDate, po.CreationDate )      as SupplierAgeDays,
 
-      case when lfa1.ernam = ekko.ernam or but000.crusr = ekko.ernam
+      case when sup.CreatedByUser = po.CreatedByUser or bp.CreatedByUser = po.CreatedByUser
            then cast( 'X' as abap_boolean preserving type )
            else cast( '' as abap_boolean preserving type ) end     as SupplierCreatorIsPOCreator,
 
-      case when lfa1.sperr <> '' or lfa1.sperm <> '' or lfa1.sperz <> ''
-             or ( lfm1.sperm is not null and lfm1.sperm <> '' )
+      case when sup.PostingIsBlocked <> '' or sup.PurchasingIsBlocked <> '' or sup.PaymentIsBlockedForSupplier <> ''
+             or ( spo.PurchasingIsBlockedForSupplier is not null and spo.PurchasingIsBlockedForSupplier <> '' )
            then cast( 'X' as abap_boolean preserving type )
            else cast( '' as abap_boolean preserving type ) end     as SupplierIsBlocked,
 
-      case when lfm1.zterm is not null and lfm1.zterm <> '' then lfm1.zterm
-           when lfb1.zterm is not null then lfb1.zterm
-           else cast( '' as dzterm ) end                           as SupplierDefaultPaymentTerms,
+      case when spo.PaymentTerms is not null and spo.PaymentTerms <> '' then spo.PaymentTerms
+           else sco.PaymentTerms end                               as SupplierDefaultPaymentTerms,
 
-      case when lfm1.zterm is not null and lfm1.zterm <> '' and lfm1.zterm <> ekko.zterm
+      case when spo.PaymentTerms is not null and spo.PaymentTerms <> '' and spo.PaymentTerms <> po.PaymentTerms
              then cast( 'X' as abap_boolean preserving type )
-           when ( lfm1.zterm is null or lfm1.zterm = '' )
-             and lfb1.zterm is not null and lfb1.zterm <> '' and lfb1.zterm <> ekko.zterm
+           when ( spo.PaymentTerms is null or spo.PaymentTerms = '' )
+             and sco.PaymentTerms is not null and sco.PaymentTerms <> '' and sco.PaymentTerms <> po.PaymentTerms
              then cast( 'X' as abap_boolean preserving type )
            else cast( '' as abap_boolean preserving type ) end     as PaymentTermsDiverge,
 
-      count( distinct obk.lifnr )                                 as SharedBankOtherSuppliers,
-      count( distinct obpbk.partner )                             as SharedBankOtherBPs
+      count( distinct obpbk.BusinessPartner )                     as SharedBankOtherBPs
 }
 where
-      ekko.bstyp = 'F'
-  and ekko.bsart = 'NB'
-  and ekko.reswk = ''
-  and ekko.loekz = ''
+      po.PurchaseOrderType              = 'NB'
+  and po.SupplyingPlant                 = ''
+  and po.PurchasingDocumentDeletionCode = ''
 group by
-  ekko.ebeln,
-  ekko.lifnr,
-  ekko.ernam,
-  ekko.aedat,
-  ekko.zterm,
-  lfa1.erdat,
-  lfa1.ernam,
-  lfa1.sperr,
-  lfa1.sperm,
-  lfa1.sperz,
-  lfm1.sperm,
-  lfm1.zterm,
-  lfb1.zterm,
-  but000.crusr
+  po.PurchaseOrder,
+  po.Supplier,
+  po.CreatedByUser,
+  po.CreationDate,
+  po.PaymentTerms,
+  sup.CreationDate,
+  sup.CreatedByUser,
+  sup.PostingIsBlocked,
+  sup.PurchasingIsBlocked,
+  sup.PaymentIsBlockedForSupplier,
+  spo.PurchasingIsBlockedForSupplier,
+  spo.PaymentTerms,
+  sco.PaymentTerms,
+  bp.CreatedByUser

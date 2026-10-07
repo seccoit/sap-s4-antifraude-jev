@@ -193,4 +193,10 @@ annotate entity ZC_POC_JEV_PEDIDO with
   RuleCriticality;
   @UI.hidden: true
   ClassificationCriticality;
+
+  /* Base tecnica do campo calculado (desvio padrao / z-score) */
+  @UI.hidden: true
+  SuplrHistSumAmount;
+  @UI.hidden: true
+  SuplrHistSumSqAmount;
 }
